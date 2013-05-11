@@ -1,0 +1,9 @@
+<div data-role="footer" style="overflow:hidden;" class="selectable"  mbuilderid="navbar-<%=componentid%>" data-widgetid="com.mbuilder.widget.uneditable">
+    <div data-role="navbar">
+        <ul>
+            <li class="selectable" data-widgetid="com.mbuilder.widget.navbar.label"  mbuilderid="label1-<%=componentid%>"><a href="#">One</a></li>
+            <li class="selectable" data-widgetid="com.mbuilder.widget.navbar.label"  mbuilderid="label2-<%=componentid%>"><a href="#">Two</a></li>
+            <li class="selectable" data-widgetid="com.mbuilder.widget.navbar.label"  mbuilderid="label3-<%=componentid%>"><a href="#">Three</a></li>
+        </ul>
+    </div>
+</div>

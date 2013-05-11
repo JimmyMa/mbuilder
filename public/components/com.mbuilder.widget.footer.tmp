@@ -1,0 +1,3 @@
+<div data-role="footer" data-theme="none" mbuilderid="footer-<%=componentid%>" data-widgetid="com.mbuilder.widget.uneditable" class="selectable">
+    <h3 class="selectable" data-widgetid="com.mbuilder.widget.label"  mbuilderid="label-<%=componentid%>">This is Footer</h3>
+</div>

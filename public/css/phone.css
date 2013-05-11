@@ -1,0 +1,40 @@
+.iphone-frame-portrait {
+    padding: 0;
+    width: 411px;
+    height: 828px;
+    background: url(../imgs/iphone/iphone_frame_portrait.png) no-repeat;
+    background-size: 100%;
+}
+
+.iphone-frame-portrait .iphone-frame-portrait-center {
+position: absolute;
+left: 47px;
+top: 124px;
+width: 320px;
+height: 568px;
+}
+
+.mbuilder-selected-control{
+    position: absolute;
+    z-index: 9996;
+    left: 0;
+    right: 0;
+    top: 0;
+    background: red;
+}
+
+.mbuilder-border-top {
+    height: 1px;
+}
+
+.mbuilder-border-bottom {
+    height: 1px;
+}
+
+.mbuilder-border-left {
+    width: 1px;
+}
+
+.mbuilder-border-right {
+    width: 1px;
+}
