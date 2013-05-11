@@ -1,4 +1,4 @@
-mbuilder.createWidget( "com.mbuilder.widget.label", "Label",
+mbuilder.createWidget( "com.mbuilder.widget.label", "Label", "",
     {
         text: {
             label: "Text",
@@ -7,6 +7,9 @@ mbuilder.createWidget( "com.mbuilder.widget.label", "Label",
                 return widget.text();
             },
             setter: function(widget, value) {
+                widget.text( value );
+            },
+            codeSetter: function(widget, value) {
                 widget.text( value );
             }
         }

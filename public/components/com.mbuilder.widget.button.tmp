@@ -1,3 +1,0 @@
-<button class="selectable" mbuilderid="button-<%=componentid%>" data-widgetid="com.mbuilder.widget.button">
-Button
-</button>

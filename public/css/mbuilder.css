@@ -50,15 +50,15 @@
 .ui-layout-pane-center {
     background:	#FFD; /* to make pane background stand-out */
     padding:	0px;
-    overflow:	hidden;
+    overflow:	auto; /* scroll - tab-panels taller than pane - without content-div */
     }
-    .ui-layout-pane-center .ui-tabs-nav {
-        /* remove rounded corners from bottom of 'tabs'*/
-        -moz-border-radius-bottomleft:		0;
-        -moz-border-radius-bottomright:		0;
-        -webkit-border-bottom-left-radius:	0;
-        -webkit-border-bottom-right-radius:	0;
-    }
+.ui-layout-pane-center .ui-tabs-nav {
+    /* remove rounded corners from bottom of 'tabs'*/
+    -moz-border-radius-bottomleft:		0;
+    -moz-border-radius-bottomright:		0;
+    -webkit-border-bottom-left-radius:	0;
+    -webkit-border-bottom-right-radius:	0;
+}
 
 /*
  *	EAST-PANE TABS
@@ -67,8 +67,8 @@
  */
 .ui-layout-pane-east {
     background:	#EFE; /* to make pane background stand-out */
-    padding:	10px;
     overflow:	auto; /* scroll - tab-panels taller than pane - without content-div */
+    padding:	0px;
     }
 .ui-layout-pane-east .ui-tabs-nav {
     /* remove rounded corners from bottom of 'tabs'*/
@@ -84,10 +84,30 @@
 }
 
 .draggableWidget { 
-    width: 90px; height: 90px; padding: 0.5em; margin: 0 10px 10px 0; margin-bottom:20px; 
+    width: 90px; 
+    height: 90px; 
+    margin: 10px; 
+    cursor: move;
+    border: 0px;
+    text-align:center;
 }
 
 [draggable=true] {
     -khtml-user-drag: element; -webkit-user-drag: element; -khtml-user-select: none; -webkit-user-select: none;
 }
 
+.iphone-frame-portrait {
+    padding: 0;
+    width: 411px;
+    height: 828px;
+    background: url(../imgs/iphone/iphone_frame_portrait.png) no-repeat;
+    background-size: 100%;
+}
+
+.iphone-frame-portrait .iphone-frame-portrait-center {
+position: absolute;
+left: 47px;
+top: 124px;
+width: 320px;
+height: 568px;
+}

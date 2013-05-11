@@ -38,20 +38,10 @@ var dragObject = new function () {
 	
 	function dropEvent(e) {
         console.log( e.dataTransfer.getData('component') );
-        var url = "components/" + e.dataTransfer.getData('component') + ".tmp";
-        $.get( url,function(data) {
-            var compiled = _.template( data, {componentid: IDCounter ++ } );
-            var component = $("#screen" ).append(compiled);
-            component.click(function(e) {
-                var target = document.elementFromPoint( e.clientX, e.clientY);
-                clearSelected();
-                controlSelected( $(target).hasClass( "selectable" ) ? $(target) : $(target).parents( ".selectable:first" ) );
-            });
-            $("#screen" ).trigger('pagecreate');
-        });
+        var widgetid = e.dataTransfer.getData('component');
+        createWidget( widgetid );
+        
 		EventHelpers.preventDefault(e);
 	}
 	
 }
-
-EventHelpers.addPageLoadEvent('dragObject.init');

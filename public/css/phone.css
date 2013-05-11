@@ -1,3 +1,8 @@
+body {
+    border: 0;
+    margin: 0;
+}
+
 .iphone-frame-portrait {
     padding: 0;
     width: 411px;
@@ -6,7 +11,7 @@
     background-size: 100%;
 }
 
-.iphone-frame-portrait .iphone-frame-portrait-center {
+.iphone-frame-portrait-center {
 position: absolute;
 left: 47px;
 top: 124px;

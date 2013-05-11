@@ -7,11 +7,13 @@
 	<LINK rel="stylesheet" type="text/css" href="js/jquery.layout/layout-default-latest.css">
     <LINK rel="stylesheet" type="text/css" href="css/mbuilder.css">
     <LINK rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap.css">
+    <LINK rel="stylesheet" type="text/css" href="js/beautifyhtml/prettify.css">
     
     <script type="text/javascript" src="js/DragDropHelpers/sprintf.js"></script>
     <script type="text/javascript" src="js/DragDropHelpers/EventHelpers.js"></script>
     <script type="text/javascript" src="js/DragDropHelpers/DragDropHelpers.js"></script>
     <SCRIPT type="text/javascript" src="js/mbuilder/drag.js"></SCRIPT> 
+    <SCRIPT type="text/javascript" src="js/beautifyhtml/beautify-html.js"></SCRIPT> 
 
     
 	<SCRIPT type="text/javascript" src="js/jquery-ui-1.10.3/jquery-1.9.1.js"></SCRIPT>
@@ -34,21 +36,40 @@
 	Action Bar
 </DIV>
 
-<div class="ui-layout-center">
-	<iframe id="childIframe" name="childIframe" src="phone.html" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>
+<div class="ui-layout-center" class="tabs-bottom">
+	<UL>
+		<LI><A href="#Design">Design</A></LI>
+		<LI><A href="#Source">Source</A></LI>
+	</UL>
+    <DIV class="ui-layout-content">
+        <DIV id="Design">
+            <div style="position: relative; top: 0px; left: 177px;" class="iphone-frame-portrait">
+                <div class="iphone-frame-portrait-center">
+                    <iframe id="childIframe" name="childIframe" src="phone.html" width="100%" height="100%" frameborder="0"></iframe>
+                    <iframe id="codesIframe" src="codes.html"></iframe>
+                </div>
+            </div>
+        </DIV>
+        <DIV id="Source">
+            <pre class="prettyprint linenums" width="100%" height="100%" id="codesArea">
+            <pre>
+        </DIV>
+    </DIV>
+
+
 </div>
 
 <DIV class="ui-layout-west">
 	<UL>
 		<LI><A href="#ProjectsView">Projects</A></LI>
-		<LI><A href="#OutlineView">Outline</A></LI>
+		<LI><A href="#OutlineView">Pages</A></LI>
 	</UL>
 	<DIV class="ui-layout-content ui-widget-content">
 		<DIV id="ProjectsView">
 			<P>Projects View</P>
 		</DIV>
 		<DIV id="OutlineView">
-			<P>Outline View</P>
+			<P>Pages View</P>
 		</DIV>
 	</DIV>
 </DIV>
@@ -56,47 +77,32 @@
 
 <DIV class="ui-layout-east">
 	<UL>
-		<LI><A href="#ScreenView">Screen</A></LI>
 		<LI><A href="#WidgetsView">Widgets</A></LI>
         <LI><A href="#PropertiesView">Properties</A></LI>
 	</UL>
-	<DIV id="ScreenView" class="ui-widget-content">
-		<P>Screen View</P>
-	</DIV>
-	<DIV id="WidgetsView" class="ui-widget-content">
-        <div id="Header" draggable="true" data-compenent="com.mbuilder.widget.header" class="ui-widget-content draggableWidget">
-            <p>Header</p>
-        </div>
-        <div id="Footer" draggable="true" data-compenent="com.mbuilder.widget.footer" class="ui-widget-content draggableWidget">
-            <p>Footer</p>
-        </div>
-        <div id="List" draggable="true" data-compenent="com.mbuilder.widget.list" class="ui-widget-content draggableWidget">
-            <p>List</p>
-        </div>
-        <div id="List" draggable="true" data-compenent="com.mbuilder.widget.navbar" class="ui-widget-content draggableWidget">
-            <p>Nav Bar</p>
-        </div>
-        <div id="List" draggable="true" data-compenent="com.mbuilder.widget.button" class="ui-widget-content draggableWidget">
-            <p>Button</p>
-        </div>
-	</DIV>
-	<DIV id="PropertiesView" class="ui-widget-content">
+    <!--DIV class="ui-layout-content"-->
+        <DIV id="WidgetsView">
 
-        <legend><label id="Propeerties_widgetname"></label></legend>
-        
-        <div id="PropertiesContent">
-            <label>Email</label>
-            <input type="text" id="inputEmail" placeholder="Email">
 
-            <label>Password</label>
-            <input id="inputPassword" placeholder="Password">
+        </DIV>
+        <DIV id="PropertiesView">
 
-            <label class="checkbox">
-                <input type="checkbox"> Remember me
-            </label>
-        </div>
+            <legend><h2><label id="Propeerties_widgetname"></label></h2></legend>
+            
+            <div id="PropertiesContent">
+                <label>Email</label>
+                <input type="text" id="inputEmail" placeholder="Email">
 
-	</DIV>
+                <label>Password</label>
+                <input id="inputPassword" placeholder="Password">
+
+                <label class="checkbox">
+                    <input type="checkbox"> Remember me
+                </label>
+            </div>
+
+        </DIV>
+    <!--/DIV->
 </DIV>
 
 <DIV class="ui-layout-south">

@@ -1,0 +1,22 @@
+<div class="container-fluid">
+    <%i = 0;
+    _.each( widgets, function(widget) { %>
+    <%if ( i % 3 == 0 ) {%>
+    <div class="row-fluid">
+    <%}
+    i ++;
+    %>
+        <div class="span4">
+                <div draggable="true" data-compenent="<%=widget.widgetid%>" class="ui-widget-content draggableWidget">
+                    
+      <img src="<%=widget.image%>" alt="">
+      <%=widget.name%>
+      
+                </div>
+        </div>
+        
+    <%if ( i % 3 == 0 ) {%>
+    </div>
+    <%}%>
+    <%}); %>
+</div>

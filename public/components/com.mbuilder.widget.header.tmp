@@ -1,5 +1,0 @@
-<div data-role="header" class="selectable" mbuilderid="header-<%=componentid%>" data-widgetid="com.mbuilder.widget.uneditable">
-    <h1 class="selectable" data-widgetid="com.mbuilder.widget.label"  mbuilderid="label-<%=componentid%>">News</h1>
-    <a href="grid-listview.html" data-shadow="false" data-iconshadow="false" 
-    data-icon="arrow-l" data-iconpos="notext" data-rel="back" data-ajax="false">Back</a>
-</div>
