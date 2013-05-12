@@ -169,6 +169,9 @@ function initEvents() {
     $("#action_save").click( function() {
         save();
     });
+    $("#action_export").click( function() {
+        doexport();
+    });
 }
 
 function save() {
@@ -182,6 +185,24 @@ function save() {
       contentType: "application/json",  
       data: JSON.stringify({ codes: codes, cleanCodes: cleanCodes }),  
       success: function(){              
+      },  
+      error: function(){  
+      }  
+    });  
+}
+
+function doexport() {
+    var codes = $("#codesIframe").get(0).contentWindow.$("body" ).html();
+    var cleanCodes = removeMBuilderCodes( codes  );
+    var data = "{codes:" + codes + ", cleanCodes:" + cleanCodes + "}";
+    $.ajax({  
+      url: "/actions/export",  
+      type: "POST",  
+      dataType: "json",  
+      contentType: "application/json",  
+      data: JSON.stringify({ codes: codes, cleanCodes: cleanCodes }),  
+      success: function(){
+        window.open( "/actions/download" );
       },  
       error: function(){  
       }  

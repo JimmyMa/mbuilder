@@ -15,10 +15,26 @@ public class JarUpdater {
         File jarFile = new File("D:/Projects/MBuilder/PGProjects/keys/MBuilder.ap_");
 
         try {
-        	updateIndexHTML(jarFile, new String[]{"assets/www/index.html"}, new String[]{"aaaa"});
+        	String[] contents = new String[1];
+        	contents[0] = Utils.replaceTemplate( "resources/templates/index.tmp", "ssssssssssssssssssssssss" );
+        	updateIndexHTML(jarFile, new String[]{"assets/www/index.html"}, contents);
+        	
+        	
+        	File apk = new File( "D:/Projects/MBuilder/PGProjects/keys/MBuilder.ap_" );
+        	File key = new File( "D:/Projects/MBuilder/PGProjects/keys/demo.keystore" );
+        	String storepass = "123456";
+        	String alias = "demo.keystore";
+        	File signed_apk = File.createTempFile( "mbuilder_signed.apk", null);
+        	
+        	APKSigner.sign( apk, key, storepass, alias, signed_apk);
+        	
+        	System.out.println( "File: " + signed_apk.getAbsolutePath() );
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
     }
 

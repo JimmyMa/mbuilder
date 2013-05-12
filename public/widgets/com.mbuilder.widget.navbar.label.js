@@ -10,7 +10,7 @@ mbuilder.createWidget( "com.mbuilder.widget.navbar.label", "Nav Label", "",
                 widget.find( ".ui-btn-inner" ).text( value );
             },
             codeSetter: function(widget, value) {
-                widget.text( value );
+                widget.find( "a" ).text( value );
             }
         }
     }, 
