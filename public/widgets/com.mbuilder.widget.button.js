@@ -15,7 +15,20 @@ mbuilder.createWidget( "com.mbuilder.widget.button", "Button",
             }
         }
     }, 
-    { 
+    {
+        click: {
+            label: "Click",
+            type: "input",
+            getter: function(widget) {
+                return widget.text();
+            },
+            setter: function(widget, value) {
+                widget.find( ".ui-btn-inner" ).text( value );
+            },
+            codeSetter: function(widget, value) {
+                widget.text( value );
+            }
+        }
     
     }
 );

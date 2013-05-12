@@ -31,16 +31,22 @@
     padding:	0;
     overflow:	hidden;
     }
-    .ui-layout-pane-west .ui-tabs-nav {
-        /* don't need border or rounded corners - tabs 'fill' the pane */
-        border-top:		0;
-        border-left:	0;
-        border-right:	0;
-        padding-bottom:	0 !important;
-        -moz-border-radius:		0;
-        -webkit-border-radius:	0;
-    }
+.ui-layout-pane-west .ui-tabs-nav {
+    /* don't need border or rounded corners - tabs 'fill' the pane */
+    border-top:		0;
+    border-left:	0;
+    border-right:	0;
+    padding-bottom:	0 !important;
+    -moz-border-radius:		0;
+    -webkit-border-radius:	0;
+}
 
+.ui-layout-pane-north {
+    padding:	0;
+    overflow:	hidden;
+    
+}
+    
 /*
  *	CENTER-PANE TABS
  *

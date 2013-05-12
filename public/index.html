@@ -14,7 +14,7 @@
     <script type="text/javascript" src="js/DragDropHelpers/DragDropHelpers.js"></script>
     <SCRIPT type="text/javascript" src="js/mbuilder/drag.js"></SCRIPT> 
     <SCRIPT type="text/javascript" src="js/beautifyhtml/beautify-html.js"></SCRIPT> 
-
+    <SCRIPT type="text/javascript" src="js/beautifyhtml/htmlparser.js"></SCRIPT> 
     
 	<SCRIPT type="text/javascript" src="js/jquery-ui-1.10.3/jquery-1.9.1.js"></SCRIPT>
 	<SCRIPT type="text/javascript" src="js/jquery-ui-1.10.3/ui/jquery-ui.js"></SCRIPT>
@@ -32,8 +32,46 @@
 </HEAD>
 <BODY>
 
-<DIV class="ui-layout-north">
-	Action Bar
+<DIV class="ui-layout-north" onmouseover="myLayout.allowOverflow('north')" onmouseout="myLayout.resetOverflow(this)">
+    <div class="navbar navbar-inverse" style="margin-bottom: 0px;">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">MBuilder</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a>Action</a></li>
+              <li><a href="#" id="action_save">Save</a></li>
+              <!--li><a href="#contact">Contact</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Action</a></li>
+                  <li><a href="#">Another action</a></li>
+                  <li><a href="#">Something else here</a></li>
+                  <li class="divider"></li>
+                  <li class="nav-header">Nav header</li>
+                  <li><a href="#">Separated link</a></li>
+                  <li><a href="#">One more separated link</a></li>
+                </ul>
+              </li-->
+            </ul>
+            <ul class="nav pull-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Export <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Android</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
 </DIV>
 
 <div class="ui-layout-center" class="tabs-bottom">
@@ -51,7 +89,7 @@
             </div>
         </DIV>
         <DIV id="Source">
-            <pre class="prettyprint linenums" width="100%" height="100%" id="codesArea">
+            <pre class="prettyprint linenums" id="codesArea">
             <pre>
         </DIV>
     </DIV>
@@ -90,19 +128,11 @@
             <legend><h2><label id="Propeerties_widgetname"></label></h2></legend>
             
             <div id="PropertiesContent">
-                <label>Email</label>
-                <input type="text" id="inputEmail" placeholder="Email">
 
-                <label>Password</label>
-                <input id="inputPassword" placeholder="Password">
-
-                <label class="checkbox">
-                    <input type="checkbox"> Remember me
-                </label>
             </div>
 
         </DIV>
-    <!--/DIV->
+    <!--/DIV-->
 </DIV>
 
 <DIV class="ui-layout-south">

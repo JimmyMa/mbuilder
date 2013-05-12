@@ -1,3 +1,32 @@
+var mbuilderAttributes = ["mbuilderid", "data-widgetid"];
+var myLayout;
+
+
+	/*
+	*#######################
+	* OUTER LAYOUT SETTINGS
+	*#######################
+	*
+	* This configuration illustrates how extensively the layout can be customized
+	* ALL SETTINGS ARE OPTIONAL - and there are more available than shown below
+	*
+	* These settings are set in 'sub-key format' - ALL data must be in a nested data-structures
+	* All default settings (applied to all panes) go inside the defaults:{} key
+	* Pane-specific settings go inside their keys: north:{}, south:{}, center:{}, etc
+	*/
+	var layoutSettings_Outer = {
+		name: "outerLayout" // NO FUNCTIONAL USE, but could be used by custom code to 'identify' a layout
+    ,   south__initClosed:			true
+    ,   west__size:	.20
+    ,	east__size:	.25
+	,	north: {
+			resizable: 				false
+        ,   siez:   42
+		}
+	};
+
+
+
 function init() {
     
     $("#codesIframe").hide();
@@ -23,6 +52,8 @@ function init() {
     
     initWidgets();
     
+    initEvents();
+    
     dragObject.init();
 }
 
@@ -35,6 +66,7 @@ function initPropertiesView() {
 }
 
 function initLayout() {
+
     $(".ui-layout-west").tabs().find(".ui-tabs-nav").sortable({ axis: 'x', zIndex: 2 });
 
     $(".ui-layout-east").tabs().find(".ui-tabs-nav").sortable({ axis: 'x', zIndex: 2 });
@@ -43,23 +75,21 @@ function initLayout() {
         activate: function( event, ui ) {
             if ( ui.newTab && ui.newTab.text() == "Source" ) {
                 var codes = $("#codesIframe").get(0).contentWindow.$("body" ).html();
-                console.log( codes );
-                codes = html_beautify( codes ,{
+                codes = html_beautify( removeMBuilderCodes( codes  ),{
                   'indent_size': 2,
                   'indent_char': ' ',
                   'max_char': 78,
                   'brace_style': 'expand',
-                  'unformatted': ['a', 'sub', 'sup', 'b', 'i', 'u']
+                  'unformatted': []
                 });
                 $("#codesArea").text( codes );
             }
         }
     }).find(".ui-tabs-nav").sortable({ axis: 'x', zIndex: 2 });
 
-    myLayout = $('body').layout({
-        west__size:	.25
-    ,	east__size:	.25
-    });
+    myLayout = $('body').layout( layoutSettings_Outer );
+    
+    $(".ui-layout-north").height( 42 );
 }
 
 function initProperties( widget, widgetData ) {
@@ -100,4 +130,60 @@ function initWidgets() {
        var compiled = _.template( data, {widgets: mbuilder.widgets } );
        content.append( compiled );
     });
+}
+
+function removeMBuilderCodes( htmlcodes ) {
+    var results = "";
+ 
+    HTMLParser(htmlcodes, {
+      start: function( tag, attrs, unary ) {
+        results += "<" + tag;
+     
+        for ( var i = 0; i < attrs.length; i++ ) {
+            if ( $.inArray( attrs[i].name, mbuilderAttributes ) < 0 ) {
+                var attrValue = attrs[i].escaped;
+                attrValue = attrValue.replace( "selectable", "" );
+                if ( attrValue != "" ) {
+                    results += " " + attrs[i].name + '="' + attrValue + '"';
+                }
+            }
+        }
+     
+        results += (unary ? "/" : "") + ">";
+      },
+      end: function( tag ) {
+        results += "</" + tag + ">";
+      },
+      chars: function( text ) {
+        results += text;
+      },
+      comment: function( text ) {
+        results += "<!--" + text + "-->";
+      }
+    });
+    
+    return results;
+}
+
+function initEvents() {
+    $("#action_save").click( function() {
+        save();
+    });
+}
+
+function save() {
+    var codes = $("#codesIframe").get(0).contentWindow.$("body" ).html();
+    var cleanCodes = removeMBuilderCodes( codes  );
+    var data = "{codes:" + codes + ", cleanCodes:" + cleanCodes + "}";
+    $.ajax({  
+      url: "/editor/save",  
+      type: "POST",  
+      dataType: "json",  
+      contentType: "application/json",  
+      data: JSON.stringify({ codes: codes, cleanCodes: cleanCodes }),  
+      success: function(){              
+      },  
+      error: function(){  
+      }  
+    });  
 }
