@@ -38,22 +38,15 @@ public class JarUpdater {
 
     }
 
-    public static void updateIndexHTML(File zipFile,
+    public static String updateIndexHTML(File zipFile,
              String[] names, String[] contents) throws IOException {
                // get a temp file
         File tempFile = File.createTempFile(zipFile.getName(), null);
-               // delete it, otherwise you cannot rename your existing zip to it.
-        tempFile.delete();
 
-        boolean renameOk=zipFile.renameTo(tempFile);
-        if (!renameOk)
-        {
-            throw new RuntimeException("could not rename the file "+zipFile.getAbsolutePath()+" to "+tempFile.getAbsolutePath());
-        }
         byte[] buf = new byte[1024];
 
-        ZipInputStream zin = new ZipInputStream(new FileInputStream(tempFile));
-        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile));
+        ZipInputStream zin = new ZipInputStream(new FileInputStream(zipFile));
+        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(tempFile));
 
         ZipEntry entry = zin.getNextEntry();
         while (entry != null) {
@@ -88,6 +81,6 @@ public class JarUpdater {
         }
         // Complete the ZIP file
         out.close();
-        tempFile.delete();
+        return tempFile.getAbsolutePath();
     }
 }
