@@ -8,7 +8,7 @@ function init() {
     });
     
     
-    $( "#screen" ).click(function(e) {
+    $("#container-1062").click(function(e) {
         var target = document.elementFromPoint( e.clientX, e.clientY);
         clearSelected();
         controlSelected( $(target).hasClass( "selectable" ) ? $(target) : $(target).parents( ".selectable:first" ) );
@@ -16,7 +16,7 @@ function init() {
     
     dragObject.init();
     
-    $( "#screen" ).droppable({
+    getCurrentPage().droppable({
         drop: function( event, ui ) {
             console.log( "=======================dropped" );
         }
@@ -77,51 +77,67 @@ function doaction(action, transferData) {
             var compiled = _.template( data, {componentid: IDCounter ++ } );
             var el = $(compiled);
             
-            clearSelected();
-            var action = {};
-            if ( dragWidget != null && dragWidget.target != undefined ) {
-                //dragWidget.source.remove();
-                if ( dragWidget.position == "before" ) {
-                    dragWidget.target.before( el );
-                } else if ( dragWidget.position == "after" ) {
-                    dragWidget.target.after( el );
-                }
-                action = {widgetData: compiled, targetWidget: dragWidget.target.attr("mbuilderid"), position: dragWidget.position};
+            if ( el.data("role") != "page" ) {
+                createNewWidget(el, compiled);
             } else {
-                $("#screen" ).append(el);
-                action = {widgetData: compiled };
+                createNewPage(el, compiled);
             }
-            
-            publish2Codes( "codes.widget.create", action );
-            $("#screen" ).trigger('pagecreate');
-            el.draggable( {stack: "#screen *", opacity: 0.7,
-                start: function() {
-               
-                },
-                revert: function(socketObj) {
-                    clearSelected();
-                    if ( dragWidget != null ) {
-                        var action = {sourceWidget: dragWidget.source.attr("mbuilderid"), targetWidget: dragWidget.target.attr("mbuilderid"), position: dragWidget.position};
-                        if ( dragWidget.position == "before" ) {
-                            dragWidget.target.before( dragWidget.source );
-                        } else if ( dragWidget.position == "after" ) {
-                            dragWidget.target.after( dragWidget.source );
-                        }
-                        dragWidget.source.removeAttr("style");
-                        publish2Codes( "codes.widget.move", action );
-                        return false;
-                    }
-                    return true;
-                },
-                drag: function( e, ui ) {
-                  console.log( "dragging " + e.pageX + ":" + e.pageY);
-                  doMoveWidget( e.clientX, e.clientY, ui.helper );
-                },
-                stop: function() {
-                }
-            });
         });
     }
+}
+
+function createNewPage(el, compiled) {
+    
+    getCurrentPage().before( el );
+    action = {widgetData: compiled, currentPage: getCurrentPageId() };
+    publish2Codes( "codes.widget.newpage", action );
+    
+    $.mobile.changePage( "#" + el[0].id );
+}
+
+function createNewWidget(el, compiled) {
+    clearSelected();
+    var action = {};
+    if ( dragWidget != null && dragWidget.target != undefined ) {
+        if ( dragWidget.position == "before" ) {
+            dragWidget.target.before( el );
+        } else if ( dragWidget.position == "after" ) {
+            dragWidget.target.after( el );
+        }
+        action = {widgetData: compiled, targetWidget: dragWidget.target.attr("mbuilderid"), position: dragWidget.position};
+    } else {
+        getCurrentPage().append(el);
+        action = {widgetData: compiled };
+    }
+    
+    publish2Codes( "codes.widget.create", action );
+    getCurrentPage().trigger('pagecreate');
+    el.draggable( {stack: "#" + getCurrentPageId() + " *", opacity: 0.7,
+        start: function() {
+       
+        },
+        revert: function(socketObj) {
+            clearSelected();
+            if ( dragWidget != null ) {
+                var action = {sourceWidget: dragWidget.source.attr("mbuilderid"), targetWidget: dragWidget.target.attr("mbuilderid"), position: dragWidget.position};
+                if ( dragWidget.position == "before" ) {
+                    dragWidget.target.before( dragWidget.source );
+                } else if ( dragWidget.position == "after" ) {
+                    dragWidget.target.after( dragWidget.source );
+                }
+                dragWidget.source.removeAttr("style");
+                publish2Codes( "codes.widget.move", action );
+                return false;
+            }
+            return true;
+        },
+        drag: function( e, ui ) {
+          console.log( "dragging " + e.pageX + ":" + e.pageY);
+          doMoveWidget( e.clientX, e.clientY, ui.helper );
+        },
+        stop: function() {
+        }
+    });
 }
 
 var dragWidget = {};
@@ -129,9 +145,9 @@ function doMoveWidget( x, y, source ) {
     clearSelected();
     var selector = "";
     if ( source != undefined ) {
-        selector = '#screen>div[mbuilderid!="' + source.attr( "mbuilderid" ) + '"], #screen>a[mbuilderid!="' + source.attr( "mbuilderid" ) + '"]';
+        selector = '#' + getCurrentPageId() + '>div[mbuilderid!="' + source.attr( "mbuilderid" ) + '"], #' + getCurrentPageId() + '>a[mbuilderid!="' + source.attr( "mbuilderid" ) + '"]';
     } else {
-        selector = '#screen>div, #screen>a';
+        selector = '#' + getCurrentPageId() + '>div, #' + getCurrentPageId() + '>a';
     }
     var target = $(selector).filter(function() {
         console.log($(this));

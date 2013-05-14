@@ -122,6 +122,8 @@ function initWidgets() {
     mbuilder.loadWidget( "com.mbuilder.widget.image" );
     mbuilder.loadWidget( "com.mbuilder.widget.label" );
     
+    mbuilder.loadWidget( "com.mbuilder.widget.tabs" );
+    
     var content = $( "#WidgetsView" );
     $.ajax({
       url: "templates/widgetslist.html",

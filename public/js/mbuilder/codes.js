@@ -2,7 +2,7 @@ function init() {
     $.pubsub( "subscribe", "codes.widget.create", function( topic, action ) {
         var el = $(action.widgetData);
         if ( action.targetWidget == undefined ) {
-            $("#screen" ).append(el);
+            getCurrentPage().append(el);
         } else {
             var filter = "*[mbuilderid='" + action.targetWidget + "']";
             var target = $($.find( filter )[0]);
@@ -13,6 +13,11 @@ function init() {
             }
         }
 
+    });
+    
+    $.pubsub( "subscribe", "codes.widget.newpage", function( topic, action ) {
+        var el = $(action.widgetData);
+        $("#" + action.currentPage).before( el );
     });
     
     $.pubsub( "subscribe", "codes.widget.move", function( topic, action ) {
@@ -35,4 +40,12 @@ function init() {
         var widget = parent.mbuilder.loadWidget( widgetid );
         widget.properties[updateInfo.property].codeSetter( target, updateInfo.value );
     });
+}
+
+function getCurrentPage() {
+	return $("#" + getCurrentPageId() );
+}
+
+function getCurrentPageId() {
+	return parent.$("#childIframe").get(0).contentWindow.$.mobile.activePage.attr('id');
 }
