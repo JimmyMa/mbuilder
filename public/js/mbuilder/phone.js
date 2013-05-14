@@ -7,7 +7,20 @@ function init() {
         widget.properties[updateInfo.property].setter( target, updateInfo.value );
     });
     
+    
+    $( "#screen" ).click(function(e) {
+        var target = document.elementFromPoint( e.clientX, e.clientY);
+        clearSelected();
+        controlSelected( $(target).hasClass( "selectable" ) ? $(target) : $(target).parents( ".selectable:first" ) );
+    });
+    
     dragObject.init();
+    
+    $( "#screen" ).droppable({
+        drop: function( event, ui ) {
+            console.log( "=======================dropped" );
+        }
+    });
 }
 
 function controlSelected( control ) {
@@ -57,17 +70,95 @@ function publish2Codes( topic, data ) {
     parent.$("#codesIframe").get(0).contentWindow.$.pubsub( 'publish', topic, data );
 }
 
-function createWidget(widgetid) {
-    var url = "widgets/" + widgetid + ".tmp";
-    $.get( url,function(data) {
-        var compiled = _.template( data, {componentid: IDCounter ++ } );
-        var component = $("#screen" ).append(compiled);
-        publish2Codes( "codes.widget.create", compiled );
-        component.click(function(e) {
-            var target = document.elementFromPoint( e.clientX, e.clientY);
+function doaction(action, transferData) {
+    if ( action == "create" ) {
+        var url = "widgets/" + transferData.getData( "widgetid" ) + ".tmp";
+        $.get( url,function(data) {
+            var compiled = _.template( data, {componentid: IDCounter ++ } );
+            var el = $(compiled);
+            
             clearSelected();
-            controlSelected( $(target).hasClass( "selectable" ) ? $(target) : $(target).parents( ".selectable:first" ) );
+            var action = {};
+            if ( dragWidget != null && dragWidget.target != undefined ) {
+                //dragWidget.source.remove();
+                if ( dragWidget.position == "before" ) {
+                    dragWidget.target.before( el );
+                } else if ( dragWidget.position == "after" ) {
+                    dragWidget.target.after( el );
+                }
+                action = {widgetData: compiled, targetWidget: dragWidget.target.attr("mbuilderid"), position: dragWidget.position};
+            } else {
+                $("#screen" ).append(el);
+                action = {widgetData: compiled };
+            }
+            
+            publish2Codes( "codes.widget.create", action );
+            $("#screen" ).trigger('pagecreate');
+            el.draggable( {stack: "#screen *", opacity: 0.7,
+                start: function() {
+               
+                },
+                revert: function(socketObj) {
+                    clearSelected();
+                    if ( dragWidget != null ) {
+                        var action = {sourceWidget: dragWidget.source.attr("mbuilderid"), targetWidget: dragWidget.target.attr("mbuilderid"), position: dragWidget.position};
+                        if ( dragWidget.position == "before" ) {
+                            dragWidget.target.before( dragWidget.source );
+                        } else if ( dragWidget.position == "after" ) {
+                            dragWidget.target.after( dragWidget.source );
+                        }
+                        dragWidget.source.removeAttr("style");
+                        publish2Codes( "codes.widget.move", action );
+                        return false;
+                    }
+                    return true;
+                },
+                drag: function( e, ui ) {
+                  console.log( "dragging " + e.pageX + ":" + e.pageY);
+                  doMoveWidget( e.clientX, e.clientY, ui.helper );
+                },
+                stop: function() {
+                }
+            });
         });
-        $("#screen" ).trigger('pagecreate');
+    }
+}
+
+var dragWidget = {};
+function doMoveWidget( x, y, source ) {
+    clearSelected();
+    var selector = "";
+    if ( source != undefined ) {
+        selector = '#screen>div[mbuilderid!="' + source.attr( "mbuilderid" ) + '"], #screen>a[mbuilderid!="' + source.attr( "mbuilderid" ) + '"]';
+    } else {
+        selector = '#screen>div, #screen>a';
+    }
+    var target = $(selector).filter(function() {
+        console.log($(this));
+        console.log( "" + (x > $(this).offset().left) + " : " + (x < ($(this).offset().left + $(this).outerWidth())
+            ) + " : " + ( y > $(this).offset().top ) + " : " + ( y < ($(this).offset().top + $(this).outerHeight())) );
+        return ( x > $(this).offset().left && x < ($(this).offset().left + $(this).outerWidth())
+            && y > $(this).offset().top && y < ($(this).offset().top + $(this).outerHeight()) );
     });
+    var offset = target.offset();
+    if ( offset == undefined ) {
+        return;
+    }
+    if ( y < ( 10  +  offset.top ) ) {
+        var line = $( "<div class='mbuilder-selected-control mbuilder-border-left'></div>" );
+        target.before( line );
+        line.offset({ top: offset.top, left: offset.left});
+        line.width( target.outerWidth() ).height( 1 );
+        dragWidget.source = source;
+        dragWidget.target = target;
+        dragWidget.position = "before";
+    } else if ( y > ( offset.top + target.outerHeight() - 10 ) ) {
+        var line = $( "<div class='mbuilder-selected-control mbuilder-border-left'></div>" );
+        target.after( line );
+        line.offset({ top: offset.top + target.outerHeight() - 1, left: offset.left});
+        line.width( target.outerWidth() ).height( 1 );
+        dragWidget.source = source;
+        dragWidget.target = target;
+        dragWidget.position = "after";
+    }
 }

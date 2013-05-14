@@ -120,7 +120,7 @@ function initWidgets() {
     mbuilder.loadWidget( "com.mbuilder.widget.list" );
     mbuilder.loadWidget( "com.mbuilder.widget.navbar" );
     mbuilder.loadWidget( "com.mbuilder.widget.image" );
-    
+    mbuilder.loadWidget( "com.mbuilder.widget.label" );
     
     var content = $( "#WidgetsView" );
     $.ajax({

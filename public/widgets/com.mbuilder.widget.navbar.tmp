@@ -1,4 +1,4 @@
-<div data-role="navbar">
+<div data-role="navbar" data-widgetid="com.mbuilder.widget.navbar" mbuilderid="navbar-<%=componentid%>">
     <ul>
         <li class="selectable" data-widgetid="com.mbuilder.widget.navbar.label"  mbuilderid="label1-<%=componentid%>"><a href="#">One</a></li>
         <li class="selectable" data-widgetid="com.mbuilder.widget.navbar.label"  mbuilderid="label2-<%=componentid%>"><a href="#">Two</a></li>

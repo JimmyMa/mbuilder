@@ -1,4 +1,5 @@
-mbuilder.createWidget( "com.mbuilder.widget.label", "Label", "",
+mbuilder.createWidget( "com.mbuilder.widget.label", "Label", 
+    "widgets/imgs/textlabel.gif",
     {
         text: {
             label: "Text",

@@ -29,18 +29,18 @@ var dragObject = new function () {
 	}
 	
 	function dragStartEvent(e) {
-		e.dataTransfer.setData('component', this.dataset.compenent);
+		e.dataTransfer.setData('action', "create");
+        e.dataTransfer.setData('widgetid', this.dataset.compenent);
 	}
 	
 	function dragOverEvent(e) {
+        doMoveWidget( e.clientX, e.clientY )
 		EventHelpers.preventDefault(e);
 	}
 	
 	function dropEvent(e) {
-        console.log( e.dataTransfer.getData('component') );
-        var widgetid = e.dataTransfer.getData('component');
-        createWidget( widgetid );
-        
+        var action = e.dataTransfer.getData('action');
+        doaction( action, e.dataTransfer );
 		EventHelpers.preventDefault(e);
 	}
 	
