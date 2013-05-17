@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -17,7 +17,7 @@ public class JarUpdater {
         try {
         	String[] contents = new String[1];
         	contents[0] = Utils.replaceTemplate( "resources/templates/index.tmp", "ssssssssssssssssssssssss" );
-        	updateIndexHTML(jarFile, new String[]{"assets/www/index.html"}, contents);
+//        	updateIndexHTML(jarFile, new String[]{"assets/www/index.html"}, contents);
         	
         	
         	File apk = new File( "D:/Projects/MBuilder/PGProjects/keys/MBuilder.ap_" );
@@ -39,7 +39,7 @@ public class JarUpdater {
     }
 
     public static String updateIndexHTML(File zipFile,
-             String[] names, String[] contents) throws IOException {
+            List<String> names, List<String> contents) throws IOException {
                // get a temp file
         File tempFile = File.createTempFile(zipFile.getName(), null);
 
@@ -72,10 +72,10 @@ public class JarUpdater {
         // Close the streams        
         zin.close();
         // Compress the files
-        for (int i = 0; i < names.length; i++) {
+        for (int i = 0; i < names.size(); i++) {
             // Add ZIP entry to output stream.
-            out.putNextEntry(new ZipEntry(names[i]));
-            out.write(contents[i].getBytes(), 0, contents[i].getBytes().length);
+            out.putNextEntry(new ZipEntry(names.get(i)));
+            out.write(contents.get(i).getBytes(), 0, contents.get(i).getBytes().length);
             // Complete the entry
             out.closeEntry();
         }

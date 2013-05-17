@@ -1,26 +1,62 @@
+var dragWidget = {};
+var selectedWidget;
+
 function init() {
     $.pubsub( "subscribe", "widget.action.updated", function( topic, updateInfo ) {
         var filter = "*[mbuilderid='" + updateInfo.mbuilderid + "']";
-        var target = $($.find( filter )[0]);
+        var target = $( filter );
         var widgetid = target.data("widgetid");
         var widget = parent.mbuilder.loadWidget( widgetid );
         widget.properties[updateInfo.property].setter( target, updateInfo.value );
     });
-    
+
+    $.pubsub( "subscribe", "widget.binding.updated", function( topic, updateInfo ) {
+        var filter = "*[mbuilderid='" + updateInfo.mbuilderid + "']";
+        var target = $( filter );
+        var widgetid = target.data("widgetid");
+        var widget = parent.mbuilder.loadWidget( widgetid );
+        if ( widget.bindings[updateInfo.property].target != undefined ) {
+            target = target.find( widget.bindings[updateInfo.property].target );
+        }
+        var bindingData = getBindingData( target );
+        bindingData[updateInfo.property] = updateInfo.value;
+        var jsonData = "";
+        $.each( bindingData, function( key, value ) {
+            jsonData += key + ":" + value + ","
+        });
+        target.attr( "data-bind", jsonData.substring( 0,jsonData.length - 1 ) );
+    });
     
     $("#container-1062").click(function(e) {
         var target = document.elementFromPoint( e.clientX, e.clientY);
         clearSelected();
-        controlSelected( $(target).hasClass( "selectable" ) ? $(target) : $(target).parents( ".selectable:first" ) );
+        var targetWidget = ($(target).hasClass( "selectable" ) ? $(target) : $(target).parents( ".selectable:first" ));
+        if ( targetWidget != null &&  selectedWidget != null 
+            && targetWidget.length > 0 &&  selectedWidget.length > 0
+            && targetWidget[0] == selectedWidget[0] ) {
+            var parentWidget = targetWidget.parents( ".selectable:first" );
+            if ( parentWidget.length != 0 ) {
+                targetWidget = parentWidget;
+            }
+        }
+        controlSelected( targetWidget );
     });
     
     dragObject.init();
     
     getCurrentPage().droppable({
         drop: function( event, ui ) {
-            console.log( "=======================dropped" );
         }
     });
+    
+    $(document).keyup(function(e){
+        e.stopPropagation();
+        if(e.keyCode == 46) {
+            var action = {mbuilderid: selectedWidget.attr( "mbuilderid" ) };
+            publish2Codes( "codes.widget.delete", action );
+            getSelectedWidget().remove();
+        }
+    }) 
 }
 
 function controlSelected( control ) {
@@ -28,6 +64,9 @@ function controlSelected( control ) {
     var offset = control.offset();
 
     var top = parent.append( "<div class='mbuilder-selected-control mbuilder-border-top'></div>" ).find(":last");
+    if ( top.length == 0 ) {
+        return;
+    }
     top.offset({ top: offset.top, left: offset.left});
     top.width( control.outerWidth() ).height( 1 );
     
@@ -44,17 +83,33 @@ function controlSelected( control ) {
     right.height( control.outerHeight() ).width( 1 );
 
     publish2Parent( "widget.action.selected", getControlData( control ) );
+    selectedWidget = control;
 }
 
 function getControlData( control ) {
     var widget = parent.mbuilder.loadWidget( control.data( "widgetid" ) );
     var widgetData = {
         widgetid: control.data( "widgetid" ),
-        mbuilderid: control.attr( "mbuilderid" )
+        mbuilderid: control.attr( "mbuilderid" ),
+        properties: {},
+        bindings: {}
     };
     $.each( widget.properties, function( key, property ) {
-        widgetData[key] = property.getter( control );
+        if( key == "filter" ) {
+            return;
+        }
+        widgetData.properties[key] = property.getter( control );
     });
+    $.each( widget.bindings, function( key, binding ) {
+        if( key == "filter" ) {
+            return;
+        }
+        if ( widget.bindings[key].target != undefined ) {
+            control = control.find( widget.bindings[key].target );
+        }
+        $.extend(widgetData.bindings, getBindingData( control ));
+    });
+    
     return widgetData;
 }
 
@@ -112,7 +167,7 @@ function createNewWidget(el, compiled) {
     
     publish2Codes( "codes.widget.create", action );
     getCurrentPage().trigger('pagecreate');
-    el.draggable( {stack: "#" + getCurrentPageId() + " *", opacity: 0.7,
+    parent.mbuilder.loadWidget( el.data( "widgetid" ) ).methods.getRootElement(el).draggable( {stack: "#" + getCurrentPageId() + " *", opacity: 0.7,
         start: function() {
        
         },
@@ -132,7 +187,6 @@ function createNewWidget(el, compiled) {
             return true;
         },
         drag: function( e, ui ) {
-          console.log( "dragging " + e.pageX + ":" + e.pageY);
           doMoveWidget( e.clientX, e.clientY, ui.helper );
         },
         stop: function() {
@@ -140,7 +194,6 @@ function createNewWidget(el, compiled) {
     });
 }
 
-var dragWidget = {};
 function doMoveWidget( x, y, source ) {
     clearSelected();
     var selector = "";
@@ -150,9 +203,8 @@ function doMoveWidget( x, y, source ) {
         selector = '#' + getCurrentPageId() + '>div, #' + getCurrentPageId() + '>a';
     }
     var target = $(selector).filter(function() {
-        console.log($(this));
-        console.log( "" + (x > $(this).offset().left) + " : " + (x < ($(this).offset().left + $(this).outerWidth())
-            ) + " : " + ( y > $(this).offset().top ) + " : " + ( y < ($(this).offset().top + $(this).outerHeight())) );
+//        console.log( "" + (x > $(this).offset().left) + " : " + (x < ($(this).offset().left + $(this).outerWidth())
+//            ) + " : " + ( y > $(this).offset().top ) + " : " + ( y < ($(this).offset().top + $(this).outerHeight())) );
         return ( x > $(this).offset().left && x < ($(this).offset().left + $(this).outerWidth())
             && y > $(this).offset().top && y < ($(this).offset().top + $(this).outerHeight()) );
     });
@@ -177,4 +229,23 @@ function doMoveWidget( x, y, source ) {
         dragWidget.target = target;
         dragWidget.position = "after";
     }
+}
+
+function getSelectedWidget() {
+    return parent.mbuilder.loadWidget( selectedWidget.data( "widgetid" ) ).methods.getRootElement(selectedWidget);
+}
+
+function getBindingData( widget ) {
+    var tmp = widget.attr( "data-bind" );
+    if ( tmp == null ) {
+        return {};
+    }
+
+    var tmparray = tmp.split( "," );
+    var bindData = {};
+    for ( var i = 0; i < tmparray.length; i ++ ) {
+        var index = tmparray[i].indexOf( ":" );
+        bindData[tmparray[i].substring(0, index )] = tmparray[i].substring( index + 1 );
+    }
+    return bindData;
 }

@@ -18,9 +18,14 @@
     <SCRIPT type="text/javascript" src="js/jquery.pubsub/jquery.pubsub.js"></SCRIPT> 
     <SCRIPT type="text/javascript" src="js/mbuilder/phone.js"></SCRIPT> 
     <SCRIPT type="text/javascript" src="js/underscore/underscore-min.js"></SCRIPT> 
+    <SCRIPT type="text/javascript" src="js/knockout-2.2.1/knockout-2.2.1.js"></SCRIPT> 
+    <SCRIPT type="text/javascript" src="test.js"></SCRIPT> 
     
 	<SCRIPT type="text/javascript">
-        $(document).ready( init );
+        $(document).ready( function() {
+            var page1View = new Page1ViewModel();
+            ko.applyBindings(page1View, document.getElementById("page1"));
+        });
 	</SCRIPT>
 
 
@@ -48,7 +53,7 @@
     <!-- /navbar -->
   </div>
   <!-- /footer -->
-  <a data-role="button" data-inline="true">Button</a>
+  <a data-role="button" data-inline="true" data-bind="click:toPage2">Button</a>
 </div>
 <!-- /page -->
 <div data-role="page" id="page2">
@@ -72,23 +77,6 @@
     <!-- /navbar -->
   </div>
   <!-- /footer -->
-  <a data-role="button" data-inline="true">Button</a>
-  <a data-role="button" data-inline="true">Button</a>
-  <a data-role="button" data-inline="true">Button</a>
-  <img src="widgets/imgs/image.png" />
-  <div data-role="navbar">
-    <ul>
-      <li>
-        <a href="#">One</a>
-      </li>
-      <li>
-        <a href="#">Two</a>
-      </li>
-      <li>
-        <a href="#">Three</a>
-      </li>
-    </ul>
-  </div>
 </div>
 <!-- /page -->
 <div data-role="page" id="page3">
@@ -114,6 +102,7 @@
   <!-- /footer -->
 </div>
 <!-- /page -->
+<div data-role="page" data-theme="a" id="page0"></div>
     
 </BODY>
 </HTML>

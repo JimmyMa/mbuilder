@@ -35,10 +35,29 @@ function init() {
     
     $.pubsub( "subscribe", "widget.action.updated", function( topic, updateInfo ) {
         var filter = "*[mbuilderid='" + updateInfo.mbuilderid + "']";
-        var target = $($.find( filter )[0]);
+        var target = $(filter);
         var widgetid = target.data("widgetid");
         var widget = parent.mbuilder.loadWidget( widgetid );
         widget.properties[updateInfo.property].codeSetter( target, updateInfo.value );
+    });
+    
+    $.pubsub( "subscribe", "codes.widget.delete", function( topic, deleteInfo ) {
+        var filter = "*[mbuilderid='" + deleteInfo.mbuilderid + "']";
+        $(filter ).remove();
+    });
+    
+    $.pubsub( "subscribe", "widget.binding.updated", function( topic, updateInfo ) {
+        var filter = "*[mbuilderid='" + updateInfo.mbuilderid + "']";
+        var target = $( filter );
+        var widgetid = target.data("widgetid");
+        var widget = parent.mbuilder.loadWidget( widgetid );
+        if ( widget.bindings[updateInfo.property].target != undefined ) {
+            target = target.find( widget.bindings[updateInfo.property].target );
+        }
+        var bindingData = getBindingData( target );
+        bindingData[updateInfo.property] = updateInfo.value;
+        var jsonData = JSON.stringify(bindingData);
+        target.attr( "data-bind", jsonData.substr(1,jsonData.length - 2).replace( new RegExp("\"", 'g'), "" ) );
     });
 }
 
@@ -48,4 +67,17 @@ function getCurrentPage() {
 
 function getCurrentPageId() {
 	return parent.$("#childIframe").get(0).contentWindow.$.mobile.activePage.attr('id');
+}
+
+function getBindingData( widget ) {
+    var tmp = widget.data( "bind" );
+    if ( tmp == null ) {
+        tmp = "";
+    }
+    var tmparray = tmp.split( /:|,/ );
+    var bindData = {};
+    for ( var i = 0; i < tmparray.length; i = i + 2 ) {
+        bindData[tmparray[i]] = tmparray[i+1];
+    }
+    return bindData;
 }

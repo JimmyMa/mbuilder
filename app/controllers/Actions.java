@@ -22,7 +22,7 @@ public class Actions extends Controller {
 		if ( code == null) {
             return badRequest( ControllersUtils.getErrorMessage( "Failed to save!" ) );
         } else {
-        	signedApk = Andriod.build( code.cleanCodes );
+        	signedApk = Andriod.build( code );
             return ok(ControllersUtils.getSuccessMessage( "OK!" ) );
         }
 	}

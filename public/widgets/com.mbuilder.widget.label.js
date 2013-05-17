@@ -1,9 +1,9 @@
 mbuilder.createWidget( "com.mbuilder.widget.label", "Label", 
-    "widgets/imgs/textlabel.gif",
+    "widgets/imgs/button.png",
     {
         text: {
             label: "Text",
-            type: "input",
+            type: "property.input",
             getter: function(widget) {
                 return widget.text();
             },

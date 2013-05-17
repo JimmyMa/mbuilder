@@ -2,7 +2,10 @@ package build.android;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import models.Code;
 import play.Logger;
 import play.api.Play;
 
@@ -10,16 +13,20 @@ public class Andriod {
 	
 	static File rootDir = Play.current().getFile( "resources/android" );
 	
-	public static String build( String codes ) {
+	public static String build( Code codes ) {
         File unsignedApkFile = new File(rootDir, "MBuilder.ap_");
-        Logger.info( "unsignedApkFile exists? : " + unsignedApkFile.exists() );
 
         try {
-        	String[] contents = new String[1];
-        	contents[0] = Utils.replaceTemplate( "resources/templates/index.tmp", codes );
-        	Logger.info( "contents: " + contents[0] );
-        	String unsignedApk = JarUpdater.updateIndexHTML(unsignedApkFile, new String[]{"assets/www/index.html"}, contents);
-        	
+        	List<String> entryNames = new ArrayList<String>();
+        	List<String> entryContents = new ArrayList<String>();
+
+        	entryNames.add("assets/www/index.html");
+        	entryContents.add( Utils.replaceTemplate( "resources/templates/index.tmp", codes.cleanedHtmlCodes ) );
+
+        	entryNames.add("assets/www/js/app.js");
+        	entryContents.add( Utils.replaceTemplate( "resources/templates/appjs.tmp", codes.getJavascriptCodes() ) );
+
+        	String unsignedApk = JarUpdater.updateIndexHTML(unsignedApkFile, entryNames, entryContents);
         	
         	File key = new File( rootDir, "demo.keystore" );
         	String storepass = "123456";

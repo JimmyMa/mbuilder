@@ -5,7 +5,7 @@ mbuilder.createWidget(
     {
         src: {
             label: "Image URL",
-            type: "input",
+            type: "property.input",
             property: "src",
             getter: function(widget) {
                 return widget.prop( "src" );
@@ -19,7 +19,7 @@ mbuilder.createWidget(
         },
         width: {
             label: "Width",
-            type: "input",
+            type: "property.input",
             property: "width",
             getter: function(widget) {
                 return widget.prop( "width" );
@@ -33,7 +33,7 @@ mbuilder.createWidget(
         },
         height: {
             label: "Height",
-            type: "input",
+            type: "property.input",
             property: "height",
             getter: function(widget) {
                 return widget.prop( "height" );
@@ -47,6 +47,9 @@ mbuilder.createWidget(
         }
     }, 
     { 
-    
+        attr: {
+            label: "Img",
+            type: "binding.input"
+        }
     }
 );

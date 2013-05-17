@@ -2,7 +2,7 @@ mbuilder.createWidget( "com.mbuilder.widget.navbar.label", "Nav Label", "",
     {
         text: {
             label: "Text",
-            type: "input",
+            type: "property.input",
             getter: function(widget) {
                 return widget.text();
             },

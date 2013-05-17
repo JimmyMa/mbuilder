@@ -79,6 +79,8 @@
 	<UL>
 		<LI><A href="#Design">Design</A></LI>
 		<LI><A href="#Source">Source</A></LI>
+        <LI><A href="#Javascript">JS</A></LI>
+        <LI><A href="#Preview">Preview</A></LI>
 	</UL>
     <DIV class="ui-layout-content">
         <DIV id="Design">
@@ -91,7 +93,20 @@
         </DIV>
         <DIV id="Source">
             <pre class="prettyprint linenums" id="codesArea">
-            <pre>
+            </pre>
+        </DIV>
+        <DIV id="Javascript" width="100%" height="100%">
+            <p>Page Codes</p>
+            <div id="page0_js" class="javascript" contenteditable></div>
+            <p id="globalcodes">Global Codes</p>
+            <div id="global_js" class="javascript" contenteditable></div>
+        </DIV>
+        <DIV id="Preview">
+            <div style="position: relative; top: 0px; left: 177px;" class="iphone-frame-portrait">
+                <div class="iphone-frame-portrait-center">
+                    <iframe id="previewIframe" name="previewIframe" src="preview.html" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
         </DIV>
     </DIV>
 
@@ -118,6 +133,7 @@
 	<UL>
 		<LI><A href="#WidgetsView">Widgets</A></LI>
         <LI><A href="#PropertiesView">Properties</A></LI>
+        <LI><A href="#Binding">Binding</A></LI>
 	</UL>
     <!--DIV class="ui-layout-content"-->
         <DIV id="WidgetsView">
@@ -133,6 +149,15 @@
             </div>
 
         </DIV>
+        <DIV id="Binding">
+
+            <legend><h2><label id="Binding_widgetname"></label></h2></legend>
+            
+            <div id="BindingContent">
+
+            </div>
+
+        </DIV>        
     <!--/DIV-->
 </DIV>
 

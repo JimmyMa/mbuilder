@@ -1,0 +1,24 @@
+<ul data-role="listview" data-inset="true" class="selectable" data-widgetid="com.mbuilder.widget.listview"  mbuilderid="listview-<%=componentid%>">
+    <li class="selectable" data-widgetid="com.mbuilder.widget.listview.li"  mbuilderid="listview-ls1-<%=componentid%>">
+        <a href="#">
+            <span>News</span>
+        </a>
+    </li>
+</ul>
+
+<!--ul data-role="listview" data-inset="true" class="selectable" data-widgetid="com.mbuilder.widget.listview"  mbuilderid="listview-<%=componentid%>">
+    <li class="selectable" data-widgetid="com.mbuilder.widget.listview.li"  mbuilderid="listview-ls1-<%=componentid%>">
+        <a href="#">
+            <img src="imgs/example/apple.png"><span>News</span>
+        </a>
+    </li>
+    <li class="selectable" data-widgetid="com.mbuilder.widget.listview.li"  mbuilderid="listview-ls2-<%=componentid%>">
+        <a href="#">
+            <img src="imgs/example/blackberry_10.png"><span>BlackBerry</span>
+        </a></li>
+    <li class="selectable" data-widgetid="com.mbuilder.widget.listview.li"  mbuilderid="listview-ls3-<%=componentid%>">
+        <a href="#">
+            <img src="imgs/example/lumia_800.png"><span>Windows Phone</span>
+        </a>
+    </li>
+</ul-->

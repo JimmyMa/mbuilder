@@ -17,10 +17,10 @@ public class Utils {
 
 			while ( (line = br.readLine()) != null ) {
 				if ( line.startsWith( "<content>" ) ) {
-					sb.append( replacement );
+					sb.append( replacement + "\n" );
 					continue;
 				}
-				sb.append( line );
+				sb.append( line + "\n");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
