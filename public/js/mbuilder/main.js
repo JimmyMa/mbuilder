@@ -190,7 +190,8 @@ function removeMBuilderCodes( htmlcodes ) {
                 var attrValue = attrs[i].escaped;
                 attrValue = attrValue.replace( "selectable", "" );
                 attrValue = attrValue.replace( "mbwidget", "" );
-                if ( attrValue != "" ) {
+                attrValue = attrValue.replace( "containable", "" );
+                if ( attrValue.trim() != "" ) {
                     results += " " + attrs[i].name + '="' + attrValue + '"';
                 }
             }
