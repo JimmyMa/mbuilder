@@ -1,0 +1,7 @@
+<ul data-role="listview" data-inset="true" class="mbwidget" data-widgetid="com.mbuilder.widget.listview"  mbuilderid="listview-<%=componentid%>">
+    <li class="selectable" data-widgetid="com.mbuilder.widget.listview.li" mbuilderid="listview-ls1-<%=componentid%>">
+        <a href="#">
+            <span>News</span>
+        </a>
+    </li>
+</ul>

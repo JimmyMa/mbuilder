@@ -1,22 +1,36 @@
-<div class="container-fluid">
-    <%i = 0;
-    _.each( widgets, function(widget) { %>
-    <%if ( i % 3 == 0 ) {%>
-    <div class="row-fluid">
-    <%}
-    i ++;
-    %>
-        <div class="span4">
+<%_.each( groups, function(group) { %>
+
+    <h3><a href="#"><%=group.groupName%></a></h3>
+    <div class="container-fluid" style="padding:0px">
+        <%i = 0;
+        _.each( group.widgets, function(widgetid) { 
+        var widget = mbuilder.loadWidget( widgetid );
+        if ( !widget.showinpallete ) {
+            return;
+        }
+        %>
+        <%if ( i % 3 == 0 ) {%>
+        <div class="row-fluid">
+        <%}
+        i ++;
+        %>
+            <div class="span4">
                 <div draggable="true" data-compenent="<%=widget.widgetid%>" class="ui-widget-content draggableWidget">
-                    
-      <img src="<%=widget.image%>" alt="">
-      <%=widget.name%>
-      
+                        
+                  <img src="<%=widget.image%>" alt="">
+                  <%=widget.name%>
+          
                 </div>
+            </div>
+            
+        <%if ( i % 3 == 0 ) {%>
         </div>
+        <%}%>
+        <%}); %>
         
-    <%if ( i % 3 == 0 ) {%>
+        <%if ( i % 3 != 0 ) {%>
+        </div>
+        <%}%>
     </div>
-    <%}%>
-    <%}); %>
-</div>
+
+<%})%>

@@ -32,77 +32,18 @@
 </HEAD>
 <BODY>
 
-<div data-role="page" id="page1">
-  <div data-role="header" data-position="fixed">
-    <h1>Friends</h1>
+<div data-role="page" data-theme="a" id="page0">
+  <div data-role="header">
+    <h1>Header</h1>
   </div>
-  <div data-role="footer" data-id="foo1" data-position="fixed">
-    <div data-role="navbar">
-      <ul>
-        <li>
-          <a href="#page1" class="ui-btn-active ui-state-persist">Friends</a>
-        </li>
-        <li>
-          <a href="#page2">Albums</a>
-        </li>
-        <li>
-          <a href="#page3">Emails</a>
-        </li>
-      </ul>
-    </div>
-    <!-- /navbar -->
+  <div data-role="content" class=" containable">
+    <h3><img src="widgets/imgs/image.png" data-position="inline" />
+    <p>Insert your content here</p></h3>
   </div>
-  <!-- /footer -->
-  <a data-role="button" data-inline="true" data-bind="click:toPage2">Button</a>
+  <div data-role="footer" data-position="fixed">
+    <h3>Footer</h3>
+  </div>
 </div>
-<!-- /page -->
-<div data-role="page" id="page2">
-  <div data-role="header" data-position="fixed">
-    <h1>Albums</h1>
-  </div>
-  <div data-role="footer" data-id="foo1" data-position="fixed">
-    <div data-role="navbar">
-      <ul>
-        <li>
-          <a href="#page1">Friends</a>
-        </li>
-        <li>
-          <a href="#page2" class="ui-btn-active ui-state-persist">Albums</a>
-        </li>
-        <li>
-          <a href="#page3">Emails</a>
-        </li>
-      </ul>
-    </div>
-    <!-- /navbar -->
-  </div>
-  <!-- /footer -->
-</div>
-<!-- /page -->
-<div data-role="page" id="page3">
-  <div data-role="header" data-position="fixed">
-    <h1>Emails</h1>
-  </div>
-  <div data-role="footer" data-id="foo1" data-position="fixed">
-    <div data-role="navbar">
-      <ul>
-        <li>
-          <a href="#page1">Friends</a>
-        </li>
-        <li>
-          <a href="#page2">Albums</a>
-        </li>
-        <li>
-          <a href="#page3" class="ui-btn-active ui-state-persist">Emails</a>
-        </li>
-      </ul>
-    </div>
-    <!-- /navbar -->
-  </div>
-  <!-- /footer -->
-</div>
-<!-- /page -->
-<div data-role="page" data-theme="a" id="page0"></div>
     
 </BODY>
 </HTML>

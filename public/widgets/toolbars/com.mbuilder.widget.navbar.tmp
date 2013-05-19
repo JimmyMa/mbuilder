@@ -1,0 +1,7 @@
+<div data-role="navbar" class="mbwidget" data-widgetid="com.mbuilder.widget.navbar" mbuilderid="navbar-<%=componentid%>">
+    <ul>
+        <li><a href="#" class="selectable" data-widgetid="com.mbuilder.widget.navbar.button"  mbuilderid="label1-<%=componentid%>">One</a></li>
+        <li><a href="#" class="selectable" data-widgetid="com.mbuilder.widget.navbar.button"  mbuilderid="label2-<%=componentid%>">Two</a></li>
+        <li><a href="#" class="selectable" data-widgetid="com.mbuilder.widget.navbar.button"  mbuilderid="label3-<%=componentid%>">Three</a></li>
+    </ul>
+</div>

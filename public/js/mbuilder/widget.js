@@ -11,14 +11,32 @@
                     methods: BaseWidget.extendMethods( methods )
                 };
             },
-            loadWidget: function( widgetId ) {
+            loadWidget: function( widgetId, groupId, show ) {
                 if ( mbuilder.widgets[ widgetId ] == undefined ) {
-                    var url = "widgets/" + widgetId + ".js";
+                    var url = "widgets/" + groupId + "/" +  widgetId + ".js";
                     $.cachedScript( url ).done(function(script, textStatus) {
                         
                     });
+                    mbuilder.widgets[ widgetId ].group = groupId;
+                    mbuilder.widgets[ widgetId ].showinpallete = show;
+                    mbuilder.groups[ groupId ].widgets[widgetId] = mbuilder.widgets[ widgetId ];
                 }
                 return mbuilder.widgets[ widgetId ];
+            },
+            loadGroup: function( groupId ) {
+                if ( mbuilder.groups[ groupId ] == undefined ) {
+                    var url = "widgets/" + groupId + "/definition.js";
+                    $.cachedScript( url ).done(function(script, textStatus) {
+                        
+                    });
+                    $.each( mbuilder.groups[ groupId ].widgets, function( index, widget ) {
+                        mbuilder.loadWidget( widget, groupId, true );
+                    });
+                    $.each( mbuilder.groups[ groupId ].noshownwidgets, function( index, widget ) {
+                        mbuilder.loadWidget( widget, groupId, false );
+                    });
+                }
+                return mbuilder.groups[ groupId ];
             },
             createEditor: function( editorType, initializer ) {
                 mbuilder.editors[ editorType ] = {initializer: initializer};
@@ -32,10 +50,18 @@
                 }
                 return mbuilder.editors[ editorType ];
             },
+            defineGroup: function( group, groupName, widgets, noshownwidgets ) {
+                mbuilder.groups[ group ] = {
+                    groupName: groupName,
+                    widgets: widgets,
+                    noshownwidgets: noshownwidgets
+                };
+            },
         };
         
         mbuilder.editors = {};
         mbuilder.widgets = {};
+        mbuilder.groups = {};
     }
 })(window);
 
@@ -53,6 +79,42 @@ var BaseWidget = {
 	            },
 	            codeSetter: function(widget, value) {
 	                widget.text( value );
+	            }
+	        },
+	        theme: {
+	            label: "Theme",
+	            type: "property.input",
+	            getter: function(widget) {
+	                return widget.attr( "data-theme" );
+	            },
+	            setter: function(widget, value) {
+	                setTheme( widget, "ui-bar", value);
+	            },
+	            codeSetter: function(widget, value) {
+	                widget.attr( "data-theme", value );
+	            }
+	        },
+	        mini: {
+	            label: "Mini Size",
+	            type: "property.checkbox",
+	            getter: function(widget) {
+	                return widget.attr( "data-mini" );
+	            },
+	            setter: function(widget, value, widgetType) {
+                    if ( value ) {
+                        widgetType.methods.getRootElement( widget ).addClass( "ui-mini" );
+                    } else {
+                        widgetType.methods.getRootElement( widget ).removeClass( "ui-mini" );
+                    }
+                    this.codeSetter( widget, value );
+	            },
+	            codeSetter: function(widget, value) {
+                    if ( value ) {
+                        widget.attr( "data-mini", value );
+                    } else {
+                        widget.removeAttr( "data-mini" );
+                    }
+	                
 	            }
 	        }
 		};
@@ -107,3 +169,11 @@ var BaseWidget = {
 		return baseMethods;
 	}
 };
+
+var themes = " a b c d e";
+function setTheme(widget, themeClass, theme) {
+    widget
+        .removeClass(themes.split(" ").join(" " + themeClass + "-"))
+        .addClass(themeClass + "-" + theme)
+        .attr("data-theme", theme);
+}

@@ -7,7 +7,7 @@ function init() {
         var target = $( filter );
         var widgetid = target.data("widgetid");
         var widget = parent.mbuilder.loadWidget( widgetid );
-        widget.properties[updateInfo.property].setter( target, updateInfo.value );
+        widget.properties[updateInfo.property].setter( target, updateInfo.value, widget );
     });
 
     $.pubsub( "subscribe", "widget.binding.updated", function( topic, updateInfo ) {
@@ -22,7 +22,11 @@ function init() {
         bindingData[updateInfo.property] = updateInfo.value;
         var jsonData = "";
         $.each( bindingData, function( key, value ) {
-            jsonData += key + ":" + value + ","
+            if ( widget.bindings[key].attr ) {
+                jsonData += "attr:{" + key + ":" + value + "},"
+            } else {
+                jsonData += key + ":" + value + ","
+            }
         });
         target.attr( "data-bind", jsonData.substring( 0,jsonData.length - 1 ) );
     });
@@ -30,16 +34,25 @@ function init() {
     $("#container-1062").click(function(e) {
         var target = document.elementFromPoint( e.clientX, e.clientY);
         clearSelected();
-        var targetWidget = ($(target).hasClass( "selectable" ) ? $(target) : $(target).parents( ".selectable:first" ));
+        var targetWidget = null;
+        if ( $(target).is( ".selectable,.mbwidget" ) ) {
+            targetWidget = $(target);
+        } else if ( $(target).parents( ".selectable:first" ).length != 0 ) {
+            targetWidget = $(target).parents( ".selectable:first" );
+        } else if ( $(target).parents( ".mbwidget:first" ).length != 0 ) {
+            targetWidget = $(target).parents( ".mbwidget:first" );
+        }
         if ( targetWidget != null &&  selectedWidget != null 
             && targetWidget.length > 0 &&  selectedWidget.length > 0
-            && targetWidget[0] == selectedWidget[0] ) {
-            var parentWidget = targetWidget.parents( ".selectable:first" );
+            && targetWidget.attr( "mbuilderid" ) == selectedWidget.attr( "mbuilderid" ) ) {
+            var parentWidget = targetWidget.parents( ".selectable:first,.mbwidget:first" );
             if ( parentWidget.length != 0 ) {
                 targetWidget = parentWidget;
             }
         }
-        controlSelected( targetWidget );
+        if ( targetWidget != null ) {
+            controlSelected( targetWidget );
+        }
     });
     
     dragObject.init();
@@ -82,8 +95,8 @@ function controlSelected( control ) {
     right.offset({ top: offset.top, left: offset.left + control.outerWidth() - 1});
     right.height( control.outerHeight() ).width( 1 );
 
-    publish2Parent( "widget.action.selected", getControlData( control ) );
     selectedWidget = control;
+    publish2Parent( "widget.action.selected", getControlData( control ) );
 }
 
 function getControlData( control ) {
@@ -94,6 +107,9 @@ function getControlData( control ) {
         properties: {},
         bindings: {}
     };
+    if ( widget == undefined ) {
+        return widgetData;
+    }
     $.each( widget.properties, function( key, property ) {
         if( key == "filter" ) {
             return;
@@ -127,7 +143,8 @@ function publish2Codes( topic, data ) {
 
 function doaction(action, transferData) {
     if ( action == "create" ) {
-        var url = "widgets/" + transferData.getData( "widgetid" ) + ".tmp";
+        var widget = parent.mbuilder.loadWidget(transferData.getData( "widgetid" ));
+        var url = "widgets/" + widget.group + "/" + widget.widgetid + ".tmp";
         $.get( url,function(data) {
             var compiled = _.template( data, {componentid: IDCounter ++ } );
             var el = $(compiled);
@@ -154,10 +171,13 @@ function createNewWidget(el, compiled) {
     clearSelected();
     var action = {};
     if ( dragWidget != null && dragWidget.target != undefined ) {
+        var target = parent.mbuilder.loadWidget( dragWidget.target.data( "widgetid" ) ).methods.getRootElement(dragWidget.target);
         if ( dragWidget.position == "before" ) {
-            dragWidget.target.before( el );
+            target.before( el );
         } else if ( dragWidget.position == "after" ) {
-            dragWidget.target.after( el );
+            target.after( el );
+        } else if ( dragWidget.position == "in" ) {
+            target.append( el );
         }
         action = {widgetData: compiled, targetWidget: dragWidget.target.attr("mbuilderid"), position: dragWidget.position};
     } else {
@@ -167,6 +187,7 @@ function createNewWidget(el, compiled) {
     
     publish2Codes( "codes.widget.create", action );
     getCurrentPage().trigger('pagecreate');
+    getCurrentPage().css( "padding-bottom", 0 );
     parent.mbuilder.loadWidget( el.data( "widgetid" ) ).methods.getRootElement(el).draggable( {stack: "#" + getCurrentPageId() + " *", opacity: 0.7,
         start: function() {
        
@@ -175,10 +196,11 @@ function createNewWidget(el, compiled) {
             clearSelected();
             if ( dragWidget != null ) {
                 var action = {sourceWidget: dragWidget.source.attr("mbuilderid"), targetWidget: dragWidget.target.attr("mbuilderid"), position: dragWidget.position};
+                var target = parent.mbuilder.loadWidget( dragWidget.target.data( "widgetid" ) ).methods.getRootElement(dragWidget.target);
                 if ( dragWidget.position == "before" ) {
-                    dragWidget.target.before( dragWidget.source );
+                    target.before( dragWidget.source );
                 } else if ( dragWidget.position == "after" ) {
-                    dragWidget.target.after( dragWidget.source );
+                    target.after( dragWidget.source );
                 }
                 dragWidget.source.removeAttr("style");
                 publish2Codes( "codes.widget.move", action );
@@ -196,22 +218,37 @@ function createNewWidget(el, compiled) {
 
 function doMoveWidget( x, y, source ) {
     clearSelected();
-    var selector = "";
+//    var target = document.elementFromPoint( x, y );
+//    target = ($(target).is( ".selectable,.mbwidget" ) ? $(target) : $(target).parents( ".selectable:first,.mbwidget:first" ));
+
+    var selector = "#" + getCurrentPageId();
     if ( source != undefined ) {
-        selector = '#' + getCurrentPageId() + '>div[mbuilderid!="' + source.attr( "mbuilderid" ) + '"], #' + getCurrentPageId() + '>a[mbuilderid!="' + source.attr( "mbuilderid" ) + '"]';
+        selector += ' .mbwidget[mbuilderid!="' + source.attr( "mbuilderid" ) + '"]';
     } else {
-        selector = '#' + getCurrentPageId() + '>div, #' + getCurrentPageId() + '>a';
+        selector = ' .mbwidget';
     }
     var target = $(selector).filter(function() {
-//        console.log( "" + (x > $(this).offset().left) + " : " + (x < ($(this).offset().left + $(this).outerWidth())
-//            ) + " : " + ( y > $(this).offset().top ) + " : " + ( y < ($(this).offset().top + $(this).outerHeight())) );
+        console.log($(this));
+        console.log( "" + (x > $(this).offset().left) + " : " + (x < ($(this).offset().left + $(this).outerWidth())
+            ) + " : " + ( y > $(this).offset().top ) + " : " + ( y < ($(this).offset().top + $(this).outerHeight())) );
         return ( x > $(this).offset().left && x < ($(this).offset().left + $(this).outerWidth())
-            && y > $(this).offset().top && y < ($(this).offset().top + $(this).outerHeight()) );
-    });
+           && y > $(this).offset().top && y < ($(this).offset().top + $(this).outerHeight()) );
+    }).filter( ":last" );
+
     var offset = target.offset();
     if ( offset == undefined ) {
+        console.log( "33444" );
+        console.log( target ); 
+        if ( getCurrentPage().children().filter('.containable:first').length > 0 ) {
+            dragWidget.source = source;
+            dragWidget.target = getCurrentPage().children().filter('.containable:first');
+            console.log( "233" );
+            console.log( dragWidget.target );
+            dragWidget.position = "in";
+        }
         return;
     }
+    console.log( target );
     if ( y < ( 10  +  offset.top ) ) {
         var line = $( "<div class='mbuilder-selected-control mbuilder-border-left'></div>" );
         target.before( line );
@@ -220,6 +257,7 @@ function doMoveWidget( x, y, source ) {
         dragWidget.source = source;
         dragWidget.target = target;
         dragWidget.position = "before";
+        console.log( "3" );
     } else if ( y > ( offset.top + target.outerHeight() - 10 ) ) {
         var line = $( "<div class='mbuilder-selected-control mbuilder-border-left'></div>" );
         target.after( line );
@@ -228,6 +266,19 @@ function doMoveWidget( x, y, source ) {
         dragWidget.source = source;
         dragWidget.target = target;
         dragWidget.position = "after";
+        console.log( "4" );
+    } else if ( target.hasClass( "containable" ) ) {
+        dragWidget.source = source;
+        dragWidget.target = target;
+        console.log( "1" );
+        console.log( dragWidget.target );
+        dragWidget.position = "in";
+    } else {
+        dragWidget.source = source;
+        dragWidget.target = getCurrentPage().children().filter('.containable:first');
+        console.log( "2" );
+        console.log( dragWidget.target );
+        dragWidget.position = "in";
     }
 }
 
@@ -244,8 +295,13 @@ function getBindingData( widget ) {
     var tmparray = tmp.split( "," );
     var bindData = {};
     for ( var i = 0; i < tmparray.length; i ++ ) {
-        var index = tmparray[i].indexOf( ":" );
-        bindData[tmparray[i].substring(0, index )] = tmparray[i].substring( index + 1 );
+        var temp = tmparray[i];
+        if ( temp.indexOf( "attr:" ) == 0) {
+            temp = temp.substring(6);
+            temp = temp.substring(0,temp.length - 1 );
+        }
+        var index = temp.indexOf( ":" );
+        bindData[temp.substring(0, index )] = temp.substring( index + 1 );
     }
     return bindData;
 }

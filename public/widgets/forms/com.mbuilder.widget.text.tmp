@@ -1,0 +1,1 @@
+<input type="text" data-mini="true" class="mbwidget" mbuilderid="text-<%=componentid%>" data-widgetid="com.mbuilder.widget.text"/>

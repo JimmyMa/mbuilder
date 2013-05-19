@@ -1,0 +1,49 @@
+<div data-role="page" id="page1">
+    <div data-role="header" data-position="fixed">
+        <h1 class="selectable" data-widgetid="com.mbuilder.widget.label"  mbuilderid="label1-<%=componentid%>">Friends</h1>
+    </div>
+
+    <div data-role="footer" data-id="foo1" data-position="fixed">
+        <div data-role="navbar">
+            <ul>
+                <li><a href="#page1" class="ui-btn-active ui-state-persist">Friends</a></li>
+                <li><a href="#page2">Albums</a></li>
+                <li><a href="#page3">Emails</a></li>
+            </ul>
+        </div><!-- /navbar -->
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+<div data-role="page" id="page2">
+    <div data-role="header" data-position="fixed">
+        <h1 class="selectable" data-widgetid="com.mbuilder.widget.label"  mbuilderid="label2-<%=componentid%>">Albums</h1>
+    </div>
+
+
+    <div data-role="footer" data-id="foo1" data-position="fixed">
+        <div data-role="navbar">
+            <ul>
+                <li><a href="#page1">Friends</a></li>
+                <li><a href="#page2" class="ui-btn-active ui-state-persist">Albums</a></li>
+                <li><a href="#page3">Emails</a></li>
+            </ul>
+        </div><!-- /navbar -->
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+<div data-role="page" id="page3">
+    <div data-role="header" data-position="fixed">
+        <h1 class="selectable" data-widgetid="com.mbuilder.widget.label"  mbuilderid="label3-<%=componentid%>">Emails</h1>
+    </div>
+
+
+    <div data-role="footer" data-id="foo1" data-position="fixed">
+        <div data-role="navbar">
+            <ul>
+                <li><a href="#page1">Friends</a></li>
+                <li><a href="#page2">Albums</a></li>
+                <li><a href="#page3" class="ui-btn-active ui-state-persist">Emails</a></li>
+            </ul>
+        </div><!-- /navbar -->
+    </div><!-- /footer -->
+</div><!-- /page -->

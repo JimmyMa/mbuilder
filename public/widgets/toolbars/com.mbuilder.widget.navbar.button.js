@@ -1,4 +1,5 @@
-mbuilder.createWidget( "com.mbuilder.widget.navbar.label", "Nav Label", "",
+mbuilder.createWidget( "com.mbuilder.widget.navbar.button", "Nav Button",
+    "",
     {
         text: {
             label: "Text",
@@ -10,11 +11,15 @@ mbuilder.createWidget( "com.mbuilder.widget.navbar.label", "Nav Label", "",
                 widget.find( ".ui-btn-inner" ).text( value );
             },
             codeSetter: function(widget, value) {
-                widget.find( "a" ).text( value );
+                widget.text( value );
             }
         }
     }, 
-    { 
+    {
+        click: {
+            label: "Click",
+            type: "binding.input"
+        }
     
     }
 );

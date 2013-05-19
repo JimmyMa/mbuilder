@@ -1,0 +1,4 @@
+<select data-role="slider" class="mbwidget" mbuilderid="switch-<%=componentid%>" data-widgetid="com.mbuilder.widget.switch">
+    <option value="off">Off</option>
+    <option value="on">On</option>
+</select>

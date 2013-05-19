@@ -1,4 +1,4 @@
-mbuilder.createWidget( "com.mbuilder.widget.text", "Text",
+mbuilder.createWidget( "com.mbuilder.widget.switch", "Flip Switch",
     "widgets/imgs/button.png",
     {
         filter: {exclude:["text"]},
@@ -17,20 +17,11 @@ mbuilder.createWidget( "com.mbuilder.widget.text", "Text",
         }
     }, 
     {
-        click: {
-            label: "Click",
-            type: "binding.input",
-            getter: function(widget) {
-                return widget.text();
-            },
-            setter: function(widget, value) {
-                widget.find( ".ui-btn-inner" ).text( value );
-            },
-            codeSetter: function(widget, value) {
-                widget.text( value );
-            }
+        value: {
+            attr: true,
+            label: "Value",
+            type: "binding.input"
         }
-    
     },
     {
         getRootElement: function(widget) {

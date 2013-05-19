@@ -10,6 +10,8 @@ function init() {
                 target.before( el );
             } else if ( action.position == "after" ) {
                 target.after( el );
+            }  else if ( action.position == "in" ) {
+                target.append( el );
             }
         }
 

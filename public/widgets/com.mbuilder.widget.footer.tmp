@@ -1,3 +1,0 @@
-<div data-theme="a" data-role="footer" data-position="fixed" mbuilderid="footer-<%=componentid%>" data-widgetid="com.mbuilder.widget.uneditable" class="selectable">
-    <h3 class="selectable" data-widgetid="com.mbuilder.widget.label"  mbuilderid="label-<%=componentid%>">Footer</h3>
-</div>

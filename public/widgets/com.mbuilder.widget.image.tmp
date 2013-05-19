@@ -1,3 +1,0 @@
-<img src="widgets/imgs/image.png" mbuilderid="footer-<%=componentid%>" 
-data-widgetid="com.mbuilder.widget.image" class="selectable">
-</img>

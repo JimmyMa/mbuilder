@@ -2,30 +2,16 @@ var mbuilderAttributes = ["mbuilderid", "data-widgetid"];
 var myLayout;
 
 
-	/*
-	*#######################
-	* OUTER LAYOUT SETTINGS
-	*#######################
-	*
-	* This configuration illustrates how extensively the layout can be customized
-	* ALL SETTINGS ARE OPTIONAL - and there are more available than shown below
-	*
-	* These settings are set in 'sub-key format' - ALL data must be in a nested data-structures
-	* All default settings (applied to all panes) go inside the defaults:{} key
-	* Pane-specific settings go inside their keys: north:{}, south:{}, center:{}, etc
-	*/
-	var layoutSettings_Outer = {
-		name: "outerLayout" // NO FUNCTIONAL USE, but could be used by custom code to 'identify' a layout
-    ,   south__initClosed:			true
-    ,   west__size:	.20
-    ,	east__size:	.25
-	,	north: {
-			resizable: 				false
-        ,   siez:   42
-		}
-	};
-
-
+var layoutSettings_Outer = {
+    name: "outerLayout" 
+,   south__initClosed:			true
+,   west__size:	.20
+,	east__size:	.25
+,	north: {
+        resizable: 				false
+    ,   siez:   42
+    }
+};
 
 function init() {
     $("#codesIframe").hide();
@@ -159,6 +145,7 @@ function publishToChildren( topic, data ) {
 }
 
 function initWidgets() {
+/*
     mbuilder.loadWidget( "com.mbuilder.widget.header" );
     mbuilder.loadWidget( "com.mbuilder.widget.button" );
     mbuilder.loadWidget( "com.mbuilder.widget.footer" );
@@ -169,14 +156,25 @@ function initWidgets() {
     
     mbuilder.loadWidget( "com.mbuilder.widget.tabs" );
     mbuilder.loadWidget( "com.mbuilder.widget.text" );
+    mbuilder.loadWidget( "com.mbuilder.widget.simpletmp" );
+*/
     
-    var content = $( "#WidgetsView" );
+    mbuilder.loadGroup( "general" );
+    mbuilder.loadGroup( "forms" );
+    mbuilder.loadGroup( "toolbars" );
+    mbuilder.loadGroup( "listviews" );
+//    mbuilder.loadGroup( "layout" );
+    mbuilder.loadGroup( "pages" );
+
+    var content = $( "#widget_groups" );
     $.ajax({
       url: "templates/widgetslist.html",
       async: false
     }).done(function(data) {
-       var compiled = _.template( data, {widgets: mbuilder.widgets } );
+       var compiled = _.template( data, {groups: mbuilder.groups, mbuilder: mbuilder} );
        content.append( compiled );
+       content.accordion({ heightStyle: "content" });
+       myLayout.sizeContent("east");
     });
 }
 
@@ -191,6 +189,7 @@ function removeMBuilderCodes( htmlcodes ) {
             if ( $.inArray( attrs[i].name, mbuilderAttributes ) < 0 ) {
                 var attrValue = attrs[i].escaped;
                 attrValue = attrValue.replace( "selectable", "" );
+                attrValue = attrValue.replace( "mbwidget", "" );
                 if ( attrValue != "" ) {
                     results += " " + attrs[i].name + '="' + attrValue + '"';
                 }
