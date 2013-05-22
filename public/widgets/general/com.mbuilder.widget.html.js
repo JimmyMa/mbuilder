@@ -1,17 +1,17 @@
-mbuilder.createWidget( "com.mbuilder.widget.label", "Label", 
+mbuilder.createWidget( "com.mbuilder.widget.html", "HTML", 
     "widgets/imgs/button.png",
     {
         text: {
             label: "Text",
-            type: "property.input",
+            type: "property.texteditor",
             getter: function(widget) {
-                return widget.text();
+                return widget.html();
             },
             setter: function(widget, value) {
-                widget.text( value );
+                widget.html( value );
             },
             codeSetter: function(widget, value) {
-                widget.text( value );
+                widget.html( value );
             }
         }
     }, 

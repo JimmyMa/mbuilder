@@ -1,0 +1,3 @@
+<div class="ui-grid-a mbwidget containable" style="height: 50px;" data-widgetid="com.mbuilder.widget.grids"  mbuilderid="grids-<%=componentid%>">
+
+</div>

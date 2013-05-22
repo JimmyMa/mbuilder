@@ -1,6 +1,3 @@
-//this is a javascript file
-<content>
-
 (function(window) {
     if ( window.m == undefined ) {
         window.m = {

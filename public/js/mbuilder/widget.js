@@ -157,7 +157,14 @@ var BaseWidget = {
 	extendMethods: function( methods ) {
 		var baseMethods = {
 	        getRootElement: function(widget) {
+                if ( widget.parent().attr('class').indexOf( 'ui-block-' ) == 0 ) {
+                    return widget.parent();
+                }
 	            return widget;
+	        },
+	        layout: function(widget) {
+	        },
+	        codeLayout: function(widget) {
 	        }
 		};
 		

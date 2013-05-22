@@ -1,15 +1,30 @@
 function init() {
-$(document).bind( "pagechangefailed", function( e, data ) {
+    $(document).bind( "pagechangefailed", function( e, data ) {
 
-    console.log( e );
-});
+        console.log( e );
+    });
 }
 
 function refreshPages() {
     renderPages();
 }
 
+//var renderTimes = 0;
 function renderPages() {
+//    renderTimes = 0;
+    doRenderPages();
+}
+
+function doRenderPages() {
+/*
+    $('#pageinit').trigger('pagecreate');
+    if ( $.mobile.activePage == undefined ) {
+        if ( renderTimes ++ < 5 ) {
+            setTimeout(doRenderPages,100);
+        }
+        return;
+    }
+*/
     if ( getCurrentPageId() != "pageinit" ) {
         $('#pageinit').bind('pageshow',function(event, ui){
             $("#pageinit").prevAll().remove();

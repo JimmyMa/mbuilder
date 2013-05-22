@@ -70,9 +70,11 @@ function init() {
             getSelectedWidget().remove();
         }
     }) 
+    
+    updatePageList();
 }
 
-function controlSelected( control ) {
+function outlineWidget( control ) {
     var parent = control.parent();
     var offset = control.offset();
 
@@ -94,6 +96,10 @@ function controlSelected( control ) {
     var right = parent.append( "<div class='mbuilder-selected-control mbuilder-border-right'></div>" ).find(":last");
     right.offset({ top: offset.top, left: offset.left + control.outerWidth() - 1});
     right.height( control.outerHeight() ).width( 1 );
+}
+
+function controlSelected( control ) {
+    outlineWidget( control );
 
     selectedWidget = control;
     publish2Parent( "widget.action.selected", getControlData( control ) );
@@ -153,6 +159,7 @@ function doaction(action, transferData) {
                 createNewWidget(el, compiled);
             } else {
                 createNewPage(el, compiled);
+                updatePageList();
             }
         });
     }
@@ -170,7 +177,7 @@ function createNewPage(el, compiled) {
 function createNewWidget(el, compiled) {
     clearSelected();
     var action = {};
-    if ( dragWidget != null && dragWidget.target != undefined ) {
+    if ( dragWidget != null && dragWidget.target != undefined && dragWidget.target.data( "role" ) != "page" ) {
         var target = parent.mbuilder.loadWidget( dragWidget.target.data( "widgetid" ) ).methods.getRootElement(dragWidget.target);
         if ( dragWidget.position == "before" ) {
             target.before( el );
@@ -179,12 +186,12 @@ function createNewWidget(el, compiled) {
         } else if ( dragWidget.position == "in" ) {
             target.append( el );
         }
+        parent.mbuilder.loadWidget( dragWidget.target.data( "widgetid" ) ).methods.layout(dragWidget.target);
         action = {widgetData: compiled, targetWidget: dragWidget.target.attr("mbuilderid"), position: dragWidget.position};
     } else {
         getCurrentPage().append(el);
         action = {widgetData: compiled };
     }
-    
     publish2Codes( "codes.widget.create", action );
     getCurrentPage().trigger('pagecreate');
     getCurrentPage().css( "padding-bottom", 0 );
@@ -201,7 +208,10 @@ function createNewWidget(el, compiled) {
                     target.before( dragWidget.source );
                 } else if ( dragWidget.position == "after" ) {
                     target.after( dragWidget.source );
+                } else if ( dragWidget.position == "in" ) {
+                    target.append( dragWidget.source );
                 }
+                parent.mbuilder.loadWidget( dragWidget.target.data( "widgetid" ) ).methods.layout(dragWidget.target);
                 dragWidget.source.removeAttr("style");
                 publish2Codes( "codes.widget.move", action );
                 return false;
@@ -214,18 +224,22 @@ function createNewWidget(el, compiled) {
         stop: function() {
         }
     });
+    controlSelected( el );    
 }
 
 function doMoveWidget( x, y, source ) {
     clearSelected();
+    console.log("----------------------------");
 //    var target = document.elementFromPoint( x, y );
 //    target = ($(target).is( ".selectable,.mbwidget" ) ? $(target) : $(target).parents( ".selectable:first,.mbwidget:first" ));
 
-    var selector = "#" + getCurrentPageId();
+    var selector = "#" + getCurrentPageId() + ",#" + getCurrentPageId();
     if ( source != undefined ) {
         selector += ' .mbwidget[mbuilderid!="' + source.attr( "mbuilderid" ) + '"]';
+        selector += ",#" + getCurrentPageId() + ' .containable[mbuilderid!="' + source.attr( "mbuilderid" ) + '"]';
     } else {
-        selector = ' .mbwidget';
+        selector += ' .mbwidget';
+        selector += ",#" + getCurrentPageId() + ' .containable';
     }
     var target = $(selector).filter(function() {
         console.log($(this));
@@ -237,7 +251,6 @@ function doMoveWidget( x, y, source ) {
 
     var offset = target.offset();
     if ( offset == undefined ) {
-        console.log( "33444" );
         console.log( target ); 
         if ( getCurrentPage().children().filter('.containable:first').length > 0 ) {
             dragWidget.source = source;
@@ -268,6 +281,7 @@ function doMoveWidget( x, y, source ) {
         dragWidget.position = "after";
         console.log( "4" );
     } else if ( target.hasClass( "containable" ) ) {
+        outlineWidget( target );
         dragWidget.source = source;
         dragWidget.target = target;
         console.log( "1" );
@@ -275,7 +289,7 @@ function doMoveWidget( x, y, source ) {
         dragWidget.position = "in";
     } else {
         dragWidget.source = source;
-        dragWidget.target = getCurrentPage().children().filter('.containable:first');
+        dragWidget.target = getCurrentPage();
         console.log( "2" );
         console.log( dragWidget.target );
         dragWidget.position = "in";
@@ -284,6 +298,15 @@ function doMoveWidget( x, y, source ) {
 
 function getSelectedWidget() {
     return parent.mbuilder.loadWidget( selectedWidget.data( "widgetid" ) ).methods.getRootElement(selectedWidget);
+}
+
+function updatePageList() {
+    var pageList = {active: getCurrentPageId(), pages: []};
+    var pages = $("div[data-role='page']");
+    for ( var i = 0; i < pages.length; i ++ ) {
+        pageList.pages.push( $(pages[i]).attr( "id" ) );
+    }
+    publish2Parent( "mbuilder.action.newpage", pageList );
 }
 
 function getBindingData( widget ) {

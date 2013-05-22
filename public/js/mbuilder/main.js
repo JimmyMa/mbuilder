@@ -163,7 +163,7 @@ function initWidgets() {
     mbuilder.loadGroup( "forms" );
     mbuilder.loadGroup( "toolbars" );
     mbuilder.loadGroup( "listviews" );
-//    mbuilder.loadGroup( "layout" );
+    mbuilder.loadGroup( "layout" );
     mbuilder.loadGroup( "pages" );
 
     var content = $( "#widget_groups" );
@@ -219,6 +219,20 @@ function initEvents() {
     });
     $("#action_export").click( function() {
         doexport();
+    });
+    
+    $.pubsub( "subscribe", "mbuilder.action.newpage", function( topic, pageList ) {
+        $("#pagesList").empty();
+        for( var i = 0; i < pageList.pages.length; i ++ ) {
+            $("#pagesList").append( '<li data-activepage="' + pageList.pages[i] + '"' + 
+                ( pageList.pages[i] == pageList.active ? ' class="active"' : '' ) + '><a href="#">' + pageList.pages[i] + '</a></li>' );
+        }
+        $(".nav-stacked li").click(function() {
+            $(".nav-stacked li").removeClass("active"); 
+            $(this).addClass("active");
+            $("#childIframe").get(0).contentWindow.$.mobile.changePage("#" +  $(this).data( "activepage" ) );
+            $("#previewIframe").get(0).contentWindow.$.mobile.changePage("#" +  $(this).data( "activepage" ) );
+        });
     });
 }
 

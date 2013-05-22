@@ -5,7 +5,7 @@ function init() {
             getCurrentPage().append(el);
         } else {
             var filter = "*[mbuilderid='" + action.targetWidget + "']";
-            var target = $($.find( filter )[0]);
+            var target = $(filter);
             if ( action.position == "before" ) {
                 target.before( el );
             } else if ( action.position == "after" ) {
@@ -13,6 +13,7 @@ function init() {
             }  else if ( action.position == "in" ) {
                 target.append( el );
             }
+            parent.mbuilder.loadWidget( target.data("widgetid") ).methods.codeLayout(target);
         }
 
     });

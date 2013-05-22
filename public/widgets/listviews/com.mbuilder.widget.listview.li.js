@@ -3,27 +3,15 @@ mbuilder.createWidget(
 	"List View Item",
 	"",
     {
-        text: {
-            label: "Text",
-            type: "property.input",
+        content: {
+            label: "Content",
+            type: "property.texteditor",
             getter: function(widget) {
-                return widget.text().trim();
+                return widget.html();
             },
             setter: function(widget, value) {
-                widget.find( "a span" ).text( value );
-            },
-            codeSetter: function(widget, value) {
-               this.setter( widget, value );
-            }
-        },
-        img: {
-            label: "Image",
-            type: "property.input",
-            getter: function(widget) {
-                return widget.text().trim();
-            },
-            setter: function(widget, value) {
-                widget.find( "a span" ).text( value );
+                widget.html( value );
+                widget.find( "img" ).addClass( "ui-li-thumb" );
             },
             codeSetter: function(widget, value) {
                this.setter( widget, value );
