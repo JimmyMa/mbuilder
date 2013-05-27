@@ -1,5 +1,5 @@
-<div data-role="page" data-theme="b" id="page<%=componentid%>">
-    <div data-role="header" data-theme="b" class="mbwidget" mbuilderid="header-<%=componentid%>" data-widgetid="com.mbuilder.widget.header">
+<div data-role="page" data-theme="b" id="page<%=componentid%>" data-add-back-btn="true">
+    <div data-role="header" class="mbwidget containable" mbuilderid="header-<%=componentid%>" data-widgetid="com.mbuilder.widget.header">
         <h1 class="selectable" mbuilderid="headerlabel-<%=componentid%>" data-widgetid="com.mbuilder.widget.label">Header</h1>
     </div>
 
@@ -8,7 +8,7 @@
                 
     </div>
 
-    <div data-role="footer" data-theme="b" data-position="fixed" class="mbwidget" mbuilderid="header-<%=componentid%>" data-widgetid="com.mbuilder.widget.footer">
+    <div data-role="footer" data-position="fixed" class="mbwidget containable" mbuilderid="header-<%=componentid%>" data-widgetid="com.mbuilder.widget.footer">
         <h3 class="selectable" mbuilderid="footerlabel-<%=componentid%>" data-widgetid="com.mbuilder.widget.label">Footer</h3>
     </div>
 </div>

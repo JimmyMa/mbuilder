@@ -11,6 +11,13 @@
     <LINK rel="stylesheet" type="text/css" href="js/beautifyhtml/prettify.css">
     <LINK rel="stylesheet" type="text/css" href="js/TinyEditor/style.css">
     
+    <link rel="stylesheet" href="js/codemirror-3.13/lib/codemirror.css">
+    <script src="js/codemirror-3.13/lib/codemirror.js"></script>
+    <script src="js/codemirror-3.13/addon/edit/matchbrackets.js"></script>
+    <script src="js/codemirror-3.13/addon/edit/continuecomment.js"></script>
+    <script src="js/codemirror-3.13/addon/comment/comment.js"></script>
+    <script src="js/codemirror-3.13/mode/javascript/javascript.js"></script>
+    
     <script type="text/javascript" src="js/DragDropHelpers/sprintf.js"></script>
     <script type="text/javascript" src="js/DragDropHelpers/EventHelpers.js"></script>
     <script type="text/javascript" src="js/DragDropHelpers/DragDropHelpers.js"></script>
@@ -99,14 +106,13 @@
         </DIV>
         <DIV id="Javascript" width="100%" height="100%">
             <p>Page Codes</p>
-            <div id="page0_js" class="javascript" contenteditable></div>
             <p id="globalcodes">Global Codes</p>
-            <div id="global_js" class="javascript" contenteditable></div>
+            <textarea id="global_js" class="javascript" name="code"></textarea>
         </DIV>
         <DIV id="Preview">
             <div style="position: relative; top: 0px; left: 177px;" class="iphone-frame-portrait">
                 <div class="iphone-frame-portrait-center">
-                    <iframe id="previewIframe" name="previewIframe" src="preview.html" width="100%" height="100%" frameborder="0"></iframe>
+                    <iframe id="previewIframe" name="previewIframe" src="/preview" width="100%" height="100%" frameborder="0"></iframe>
                 </div>
             </div>
         </DIV>

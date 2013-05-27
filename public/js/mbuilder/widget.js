@@ -1,14 +1,15 @@
 (function(window) {
     if ( window.mbuilder == undefined ) {
         window.mbuilder = {
-            createWidget: function( widgetId, name, image, properties, bindings, methods ) {
+            createWidget: function( widgetId, name, image, properties, bindings, methods, dependencies ) {
                 mbuilder.widgets[ widgetId ] = {
                     widgetid: widgetId,
                     name: name, 
                     image: image, 
                     properties: BaseWidget.extendProperties( properties ), 
                     bindings: BaseWidget.extendBindings( bindings ),
-                    methods: BaseWidget.extendMethods( methods )
+                    methods: BaseWidget.extendMethods( methods ),
+                    dependencies: (dependencies == undefined? {} : dependencies)
                 };
             },
             loadWidget: function( widgetId, groupId, show ) {
@@ -68,7 +69,20 @@
 var BaseWidget = {
 	extendProperties: function( properties ) {
 		var baseProperties = {
-	        text: {
+	        id: {
+	            label: "ID",
+	            type: "property.input",
+	            getter: function(widget) {
+	                return widget.attr( "id" );
+	            },
+	            setter: function(widget, value) {
+	                widget.attr( "id", value );
+	            },
+	            codeSetter: function(widget, value) {
+	                widget.attr( "id", value );
+	            }
+	        },
+            text: {
 	            label: "Text",
 	            type: "property.input",
 	            getter: function(widget) {
@@ -92,6 +106,19 @@ var BaseWidget = {
 	            },
 	            codeSetter: function(widget, value) {
 	                widget.attr( "data-theme", value );
+	            }
+	        },
+	        class: {
+	            label: "Class",
+	            type: "property.input",
+	            getter: function(widget) {
+	                return widget.attr( "class" );
+	            },
+	            setter: function(widget, value) {
+	                widget.addClass( value );
+	            },
+	            codeSetter: function(widget, value) {
+	                widget.addClass( value );
 	            }
 	        },
 	        mini: {
@@ -134,19 +161,18 @@ var BaseWidget = {
 	},
 	extendBindings: function( bindings ) {
 		var baseBindings = {
-	        click: {
-	            label: "Click",
-	            type: "binding.input",
-	            getter: function(widget) {
-	                return widget.text();
-	            },
-	            setter: function(widget, value) {
-	                widget.find( ".ui-btn-inner" ).text( value );
-	            },
-	            codeSetter: function(widget, value) {
-	                widget.text( value );
-	            }
-	        }
+            click: {
+                label: "Click",
+                type: "binding.input"
+            },
+            text: {
+                label: "Text",
+                type: "binding.input"
+            },
+            html: {
+                label: "HTML Content",
+                type: "binding.input"
+            }
 		};
 		
 		$.each( bindings, function( key, value ) {
@@ -165,6 +191,8 @@ var BaseWidget = {
 	        layout: function(widget) {
 	        },
 	        codeLayout: function(widget) {
+	        },
+            postCreated: function(widget, page) {
 	        }
 		};
 		

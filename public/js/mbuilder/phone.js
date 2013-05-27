@@ -2,6 +2,9 @@ var dragWidget = {};
 var selectedWidget;
 
 function init() {
+    $.each( window.m.documentReadyFuncs, function( index, readyFunc ) {
+        readyFunc();
+    });
     $.pubsub( "subscribe", "widget.action.updated", function( topic, updateInfo ) {
         var filter = "*[mbuilderid='" + updateInfo.mbuilderid + "']";
         var target = $( filter );
@@ -11,24 +14,7 @@ function init() {
     });
 
     $.pubsub( "subscribe", "widget.binding.updated", function( topic, updateInfo ) {
-        var filter = "*[mbuilderid='" + updateInfo.mbuilderid + "']";
-        var target = $( filter );
-        var widgetid = target.data("widgetid");
-        var widget = parent.mbuilder.loadWidget( widgetid );
-        if ( widget.bindings[updateInfo.property].target != undefined ) {
-            target = target.find( widget.bindings[updateInfo.property].target );
-        }
-        var bindingData = getBindingData( target );
-        bindingData[updateInfo.property] = updateInfo.value;
-        var jsonData = "";
-        $.each( bindingData, function( key, value ) {
-            if ( widget.bindings[key].attr ) {
-                jsonData += "attr:{" + key + ":" + value + "},"
-            } else {
-                jsonData += key + ":" + value + ","
-            }
-        });
-        target.attr( "data-bind", jsonData.substring( 0,jsonData.length - 1 ) );
+        updateBinding( updateInfo );
     });
     
     $("#container-1062").click(function(e) {
@@ -56,11 +42,12 @@ function init() {
     });
     
     dragObject.init();
-    
+    /*
     getCurrentPage().droppable({
         drop: function( event, ui ) {
         }
     });
+    */
     
     $(document).keyup(function(e){
         e.stopPropagation();
@@ -71,8 +58,12 @@ function init() {
         }
     }) 
     
-    updatePageList();
+    $( "#page0" ).on( 'pageshow',function(event){
+      updatePageList();
+    });
 }
+
+
 
 function outlineWidget( control ) {
     var parent = control.parent();
@@ -167,7 +158,7 @@ function doaction(action, transferData) {
 
 function createNewPage(el, compiled) {
     
-    getCurrentPage().before( el );
+    getCurrentPage().after( el );
     action = {widgetData: compiled, currentPage: getCurrentPageId() };
     publish2Codes( "codes.widget.newpage", action );
     
@@ -194,6 +185,7 @@ function createNewWidget(el, compiled) {
     }
     publish2Codes( "codes.widget.create", action );
     getCurrentPage().trigger('pagecreate');
+    parent.mbuilder.loadWidget( el.data( "widgetid" ) ).methods.postCreated(el, getCurrentPage());
     getCurrentPage().css( "padding-bottom", 0 );
     parent.mbuilder.loadWidget( el.data( "widgetid" ) ).methods.getRootElement(el).draggable( {stack: "#" + getCurrentPageId() + " *", opacity: 0.7,
         start: function() {
@@ -229,7 +221,7 @@ function createNewWidget(el, compiled) {
 
 function doMoveWidget( x, y, source ) {
     clearSelected();
-    console.log("----------------------------");
+//    console.log("----------------------------");
 //    var target = document.elementFromPoint( x, y );
 //    target = ($(target).is( ".selectable,.mbwidget" ) ? $(target) : $(target).parents( ".selectable:first,.mbwidget:first" ));
 
@@ -256,7 +248,7 @@ function doMoveWidget( x, y, source ) {
             dragWidget.source = source;
             dragWidget.target = getCurrentPage().children().filter('.containable:first');
             console.log( "233" );
-            console.log( dragWidget.target );
+//            console.log( dragWidget.target );
             dragWidget.position = "in";
         }
         return;
@@ -307,24 +299,4 @@ function updatePageList() {
         pageList.pages.push( $(pages[i]).attr( "id" ) );
     }
     publish2Parent( "mbuilder.action.newpage", pageList );
-}
-
-function getBindingData( widget ) {
-    var tmp = widget.attr( "data-bind" );
-    if ( tmp == null ) {
-        return {};
-    }
-
-    var tmparray = tmp.split( "," );
-    var bindData = {};
-    for ( var i = 0; i < tmparray.length; i ++ ) {
-        var temp = tmparray[i];
-        if ( temp.indexOf( "attr:" ) == 0) {
-            temp = temp.substring(6);
-            temp = temp.substring(0,temp.length - 1 );
-        }
-        var index = temp.indexOf( ":" );
-        bindData[temp.substring(0, index )] = temp.substring( index + 1 );
-    }
-    return bindData;
 }

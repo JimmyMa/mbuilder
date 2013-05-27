@@ -38,10 +38,6 @@ mbuilder.createWidget( "com.mbuilder.widget.button", "Button",
         }
     }, 
     {
-        click: {
-            label: "Click",
-            type: "binding.input"
-        }
     
     }
 );

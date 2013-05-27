@@ -1,12 +1,14 @@
-//this is a javascript file
-<content>
-
 (function(window) {
     if ( window.m == undefined ) {
         window.m = {
             activePage: function( pageId ) {
                 $.mobile.changePage( "#" + pageId );
-            }
+            },
+            documentReady: function( ){}
         }
     }
 })(window);
+
+
+//this is a javascript file
+<content>

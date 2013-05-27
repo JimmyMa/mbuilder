@@ -39,7 +39,7 @@ public class JarUpdater {
     }
 
     public static String updateIndexHTML(File zipFile,
-            List<String> names, List<String> contents) throws IOException {
+            List<String> names, List contents) throws IOException {
                // get a temp file
         File tempFile = File.createTempFile(zipFile.getName(), null);
 
@@ -75,7 +75,13 @@ public class JarUpdater {
         for (int i = 0; i < names.size(); i++) {
             // Add ZIP entry to output stream.
             out.putNextEntry(new ZipEntry(names.get(i)));
-            out.write(contents.get(i).getBytes(), 0, contents.get(i).getBytes().length);
+            if ( contents.get(i) instanceof String ) {
+            	String content = (String)contents.get(i);
+            	out.write(content.getBytes(), 0, content.getBytes().length);
+            } else {
+            	byte[] bytes = (byte[])contents.get(i);
+            	out.write( bytes );
+            }
             // Complete the entry
             out.closeEntry();
         }

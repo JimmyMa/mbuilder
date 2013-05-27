@@ -1,8 +1,10 @@
 package build.android;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import play.api.Play;
@@ -27,5 +29,21 @@ public class Utils {
 			e.printStackTrace();
 		}
 		return sb.toString();
+	}
+	
+	public static byte[] readFile( String file ) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			InputStream is = new FileInputStream( Play.current().getFile( file ) );
+			byte[] bytes = new byte[255];
+			int len = 0;
+			while ( (len=is.read(bytes,0,255)) != -1 ) {
+				out.write(bytes, 0, len);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return out.toByteArray();
 	}
 }

@@ -1,31 +1,48 @@
 package build.android;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.Code;
+import models.Project;
 import play.Logger;
 import play.api.Play;
+import views.html.preview;
 
 public class Andriod {
 	
 	static File rootDir = Play.current().getFile( "resources/android" );
 	
-	public static String build( Code codes ) {
+	public static String build( Project project ) {
         File unsignedApkFile = new File(rootDir, "MBuilder.ap_");
 
         try {
         	List<String> entryNames = new ArrayList<String>();
-        	List<String> entryContents = new ArrayList<String>();
+        	List entryContents = new ArrayList();
 
         	entryNames.add("assets/www/index.html");
-        	entryContents.add( Utils.replaceTemplate( "resources/templates/index.tmp", codes.cleanedHtmlCodes ) );
+        	entryContents.add( preview.render( project, true, "" ).body() );
 
         	entryNames.add("assets/www/js/app.js");
-        	entryContents.add( Utils.replaceTemplate( "resources/templates/appjs.tmp", codes.getJavascriptCodes() ) );
+        	entryContents.add( Utils.replaceTemplate( "resources/templates/appjs.tmp", project.getJavascriptCodes() ) );
 
+        	for ( String cssFile : project.cssFiles ) {
+        		entryNames.add( "assets/www/" + cssFile );
+        		entryContents.add( Utils.readFile( "public/" + cssFile ) );
+        	}
+        	
+        	for ( String jsFile : project.jsFiles ) {
+        		entryNames.add( "assets/www/" + jsFile );
+        		entryContents.add( Utils.readFile( "public/" + jsFile ) );
+        	}
+
+        	for ( String file : project.files ) {
+        		entryNames.add( "assets/www/" + file );
+        		entryContents.add( Utils.readFile( "public/" + file ) );
+        	}
+        	
         	String unsignedApk = JarUpdater.updateIndexHTML(unsignedApkFile, entryNames, entryContents);
         	
         	File key = new File( rootDir, "demo.keystore" );

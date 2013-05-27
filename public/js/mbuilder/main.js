@@ -15,6 +15,7 @@ var layoutSettings_Outer = {
 
 function init() {
     $("#codesIframe").hide();
+    createJSEditor("global_js");
     
     jQuery.cachedScript = function(url, options) {
      
@@ -82,16 +83,17 @@ function initLayout() {
                 });
                 $("#codesArea").text( codes );
             } else if ( ui.newTab && ui.newTab.text() == "JS" ) {
-                $(".javascript").hide();
-                var currentPageId = "#" + getCurrentPageId() + "_js";
-                if ( $(currentPageId).length == 0 ) {
-                    $("#globalcodes").before( "<div id='" + getCurrentPageId() + "_js' class='javascript' contenteditable></div>" );
+                $(".javascript_jsDiv").hide();
+                var currentPageId = getCurrentPageId() + "_js";
+                if ( $("#" + currentPageId).length == 0 ) {
+                    $("#globalcodes").before( "<div id='" + currentPageId + "Div' class='javascript_jsDiv'><textarea id='" + currentPageId + "' class='javascript'></textarea></div>" );
+                    createJSEditor(currentPageId);
                 } else {
-                    $(currentPageId).show();
+                    $("#" + currentPageId + 'Div').show();
                 }
-                $("#global_js").show();
             } else if ( ui.newTab && ui.newTab.text() == "Preview" ) {
-                $("#previewIframe").get(0).contentWindow.refreshPages();
+                //document.frames('previewIframe').location.reload();
+                $("#previewIframe").get(0).contentWindow.location.reload();
             }
         }
     }).find(".ui-tabs-nav").sortable({ axis: 'x', zIndex: 2 });
@@ -178,7 +180,7 @@ function initWidgets() {
     });
 }
 
-function removeMBuilderCodes( htmlcodes ) {
+function removeMBuilderCodes( htmlcodes, project ) {
     var results = "";
  
     HTMLParser(htmlcodes, {
@@ -193,6 +195,18 @@ function removeMBuilderCodes( htmlcodes ) {
                 attrValue = attrValue.replace( "containable", "" );
                 if ( attrValue.trim() != "" ) {
                     results += " " + attrs[i].name + '="' + attrValue + '"';
+                }
+            }
+            if ( project != undefined && attrs[i].name == "data-widgetid" ) {
+                var widget = mbuilder.loadWidget( attrs[i].escaped );
+                if ( widget.dependencies.cssFiles != null ) {
+                    project.cssFiles = project.cssFiles.concat( widget.dependencies.cssFiles );
+                }
+                if ( widget.dependencies.jsFiles != null ) {
+                   project.jsFiles = project.jsFiles.concat( widget.dependencies.jsFiles );
+                }
+                if ( widget.dependencies.files != null ) {
+                   project.files = project.files.concat( widget.dependencies.files );
                 }
             }
         }
@@ -237,15 +251,14 @@ function initEvents() {
 }
 
 function save() {
-    var codes = $("#codesIframe").get(0).contentWindow.$("body" ).html();
-    var cleanCodes = removeMBuilderCodes( codes  );
-    var data = "{codes:" + codes + ", cleanCodes:" + cleanCodes + "}";
+    var project = processProject();
+
     $.ajax({  
       url: "/editor/save",  
       type: "POST",  
       dataType: "json",  
       contentType: "application/json",  
-      data: JSON.stringify({ codes: codes, cleanCodes: cleanCodes }),  
+      data: JSON.stringify(project),  
       success: function(){              
       },  
       error: function(){  
@@ -253,32 +266,48 @@ function save() {
     });  
 }
 
-function doexport() {
-    var codes = $("#codesIframe").get(0).contentWindow.$("body" ).html();
-    var cleanCodes = removeMBuilderCodes( codes  );
+function processProject() {
+    var project = {cssFiles: [], jsFiles: [], files: []};
+    var rawCodes = $("#codesIframe").get(0).contentWindow.$("body" ).html();
+    var cleanCodes = removeMBuilderCodes( rawCodes, project );
     var javascript = [];
-    $.each( $(".javascript"), function( index, jsDiv ) {
-        var id = jsDiv.id;
+    $.each( $(".javascript"), function( index, jsEditor ) {
+        var id = jsEditor.id;
         id = id.substring( 0,id.length - 3 );
-        javascript.push( {pageId: id, javascript: jsDiv.textContent} );
+        console.log( $(jsEditor).data( "editor" ).getValue() );
+        javascript.push( {pageId: id, javascript: $(jsEditor).data( "editor" ).getValue()} );
     });
     
-    var data = {};
-    data.rawHtmlCodes = codes;
-    data.cleanedHtmlCodes = cleanCodes;
-    data.javascriptCodes = javascript;
+    project.rawHtmlCodes = rawCodes;
+    project.cleanedHtmlCodes = cleanCodes;
+    project.javascriptCodes = javascript;
+    return project;
+}
+
+function doexport() {
+    var project = processProject();
     $.ajax({  
       url: "/actions/export",  
       type: "POST",  
       dataType: "json",  
       contentType: "application/json",  
-      data: JSON.stringify(data),  
+      data: JSON.stringify(project),  
       success: function(){
         window.open( "/actions/download" );
       },  
       error: function(){  
       }  
     });  
+}
+
+function createJSEditor( elemId) {
+  var editor = CodeMirror.fromTextArea(document.getElementById(elemId), {
+    lineNumbers: true,
+    matchBrackets: true,
+    continueComments: "Enter",
+    extraKeys: {"Ctrl-Q": "toggleComment"}
+  });
+  $("#" + elemId ).data( "editor", editor );
 }
 
 function getCurrentPageId() {

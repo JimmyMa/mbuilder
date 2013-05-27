@@ -1,0 +1,3 @@
+<ul class="gallery mbwidget" mbuilderid="gallery-<%=componentid%>" data-widgetid="com.mbuilder.widget.gallery">
+    <li class="selectable" data-widgetid="com.mbuilder.widget.gallery.li"  mbuilderid="gallery-li1-<%=componentid%>"><a href="/assets/imgs/example/gallery/full/001.jpg" rel="external"><img src="/assets/imgs/example/gallery/thumb/001.jpg" alt="Image 001" /></a></li>
+</ul>
