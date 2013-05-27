@@ -14,6 +14,7 @@ public class Application extends Controller {
   }
   
   public static Result preview() {
+	Logger.info( "IP: " + request().remoteAddress() );
 	return ok(preview.render( Projects.get(request().remoteAddress()), false, "/assets/") );
   }
   
