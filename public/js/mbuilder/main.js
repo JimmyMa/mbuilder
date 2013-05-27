@@ -93,6 +93,7 @@ function initLayout() {
                 }
             } else if ( ui.newTab && ui.newTab.text() == "Preview" ) {
                 //document.frames('previewIframe').location.reload();
+                doSave();
                 $("#previewIframe").get(0).contentWindow.location.reload();
             }
         }
@@ -229,7 +230,7 @@ function removeMBuilderCodes( htmlcodes, project ) {
 
 function initEvents() {
     $("#action_save").click( function() {
-        save();
+        doSave();
     });
     $("#action_export").click( function() {
         doexport();
@@ -250,7 +251,7 @@ function initEvents() {
     });
 }
 
-function save() {
+function doSave() {
     var project = processProject();
 
     $.ajax({  
