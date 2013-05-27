@@ -20,7 +20,10 @@ public class Editor extends Controller {
             return badRequest( ControllersUtils.getErrorMessage( "Failed to save!" ) );
         } else {
         	Logger.info( "Json111:" + request().remoteAddress() );
-        	Projects.put(request().remoteAddress(), code);
+        	if ( session().get( "project" ) == null ) {
+        		session().put( "project", String.valueOf( Math.random() ) );
+        	}
+        	Projects.put(session().get( "project" ), code);
             return ok(ControllersUtils.getSuccessMessage( "OK!") );
         }
 	}
