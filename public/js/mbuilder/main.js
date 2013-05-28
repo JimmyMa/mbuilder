@@ -111,15 +111,11 @@ function initProperties( widget, widgetData ) {
         if( key == "filter" ) {
             return;
         }
-        $.ajax({
-          url: "editors/" + property.type + ".html",
-          async: false
-        }).done(function(data) {
-           var id = IDCounter++;
-           var compiled = _.template( data, {id: id, property: property, widgetData: widgetData, value: widgetData.properties[key] } );
-           content.append( compiled );
-           mbuilder.loadEditor( property.type ).initializer( id, key, widgetData );
-        });
+        var template = mbuilder.loadEditorTmp( property.type );
+        var id = IDCounter++;
+        var compiled = _.template( template, {id: id, property: property, widgetData: widgetData, value: widgetData.properties[key] } );
+        content.append( compiled );
+        mbuilder.loadEditor( property.type ).initializer( id, key, widgetData );
     });
 }
 
@@ -130,15 +126,11 @@ function initBinding( widget, widgetData ) {
         if( key == "filter" ) {
             return;
         }
-        $.ajax({
-          url: "editors/" + binding.type + ".html",
-          async: false
-        }).done(function(data) {
-           var id = IDCounter++;
-           var compiled = _.template( data, {id: id, property: binding, widgetData: widgetData, value: widgetData.bindings[key] } );
-           content.append( compiled );
-           mbuilder.loadEditor( binding.type ).initializer( id, key, widgetData );
-        });
+        var template = mbuilder.loadEditorTmp( binding.type );
+        var id = IDCounter++;
+        var compiled = _.template( template, {id: id, property: binding, widgetData: widgetData, value: widgetData.bindings[key] } );
+        content.append( compiled );
+        mbuilder.loadEditor( binding.type ).initializer( id, key, widgetData );
     });
 }
 

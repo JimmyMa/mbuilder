@@ -51,6 +51,18 @@
                 }
                 return mbuilder.editors[ editorType ];
             },
+            loadEditorTmp: function( editorType ) {
+                var key = editorType+"tmp";
+                if ( mbuilder.editors[ key ] == undefined ) {
+                    $.ajax({
+                      url: "editors/" + editorType + ".html",
+                      async: false
+                    }).done(function(data) {
+                       mbuilder.editors[ key ] = data;
+                    });
+                }
+                return mbuilder.editors[ key ];
+            },
             defineGroup: function( group, groupName, widgets, noshownwidgets ) {
                 mbuilder.groups[ group ] = {
                     groupName: groupName,
