@@ -56,6 +56,14 @@ function init() {
     });
 }
 
+$.pubsub( "subscribe", "projectsourceupdated", function( topic, project ) {
+    $( "body" ).empty().append( project.rawHtmlCodes.trim() );
+});
+
+$.pubsub( "subscribe", "projectsourceinit", function( topic, codes ) {
+    $( "body" ).empty().append( codes );
+});
+
 function getCurrentPage() {
 	return $("#" + getCurrentPageId() );
 }

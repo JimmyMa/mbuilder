@@ -4,11 +4,14 @@
 
 # Home page
 GET     /                           controllers.Application.index()
-GET     /preview                    controllers.Application.preview()
 
+# Authorization
+POST   /login                       controllers.GlobalApp.authenticate()
+POST   /register                    controllers.Application.addUser()
 
 # Editor
 POST   /editor/save                 controllers.Editor.save()
+GET     /preview                    controllers.Application.preview()
 
 # Action
 POST   /actions/export                 controllers.Actions.export()
@@ -16,3 +19,8 @@ GET    /actions/download               controllers.Actions.download()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Projects
+GET    /projects                 controllers.Application.getProjects()
+PUT    /project                  controllers.Application.addProject()
+GET    /projectsource/:projid    controllers.Application.getProjectSource(projid:Int)

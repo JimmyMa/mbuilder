@@ -1,46 +1,43 @@
 package models;
 
-import java.util.List;
+import java.util.Date;
 
-import play.Logger;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-public class Project {
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+import play.data.format.Formats;
+import play.db.ebean.Model;
+
+@Entity 
+@Table(name="projects")
+public class Project extends Model {
 	
-	public String rawHtmlCodes;
-	public String cleanedHtmlCodes;
-	public List<JavascriptCode> javascriptCodes;
-	public String[] cssFiles;
-	public String[] jsFiles;
-	public String[] files;
-	
-	public String getJavascriptCodes() {
-		StringBuffer codes = new StringBuffer();
-		StringBuffer readyCodes = new StringBuffer();
-		readyCodes.append( "$(document).ready( function() {\n" );
-		for (JavascriptCode code : javascriptCodes ) {
-			Logger.info( "--------Info: " + code.javascript );
-			if ( code.pageId.equals( "global") ) {
-				codes.append( code.javascript + "\n");
-				continue;
-			}
-			
-			readyCodes.append( "ko.applyBindings(" + code.pageId + "View, document.getElementById('" + code.pageId + "'));\n" );
-			
-		    codes.append( "function " + code.pageId + "ViewModel() {\n" );
-		    codes.append( code.javascript + "\n" );
-		    codes.append( "}\n" );
-		    codes.append( "var " + code.pageId + "View = new " + code.pageId + "ViewModel();\n" );
-		}
-		
-		
-		readyCodes.append( "callDocumentReadyFuncs();});\n" );
-
-		return readyCodes.toString() + codes.toString();
+	@Id
+    public Long id;
+    
+    public String name;
+    public String description;
+    
+    @Formats.DateTime(pattern="MM/dd/yy")
+    public Date create_date;
+    
+    @JsonIgnore
+    @ManyToOne
+    public User user;
+    
+    public static Model.Finder<Long,Project> find = new Model.Finder(Long.class, Project.class);
+    
+    @Override
+	public void save() {
+		super.save();
 	}
-}
-
-class JavascriptCode {
-	
-	public String pageId;
-	public String javascript;
+    
+    @Override
+	public void update() {
+		super.update();
+	}
 }

@@ -1,0 +1,19 @@
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody data-bind="foreach: projects">
+    <tr>
+      <td>1</td>
+      <td><a data-bind="attr:{'href': '/assets/index.html?project=' + id}, text: name"></a></td>
+      <td data-bind="text: description"></td>
+      <td>N/A</td>
+    </tr>
+  </tbody>
+</table>
+<button class="btn btn-large btn-primary" data-bind="click:newProject">New Project</button>

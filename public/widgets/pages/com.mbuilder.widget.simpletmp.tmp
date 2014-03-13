@@ -3,10 +3,8 @@
 </div>
 
 <div data-role="content" class="mbwidget containable" mbuilderid="content-<%=componentid%>" data-widgetid="com.mbuilder.widget.content">
-
-            
 </div>
 
-<div data-role="footer" data-position="fixed" class="mbwidget" mbuilderid="header-<%=componentid%>" data-widgetid="com.mbuilder.widget.footer">
+<div data-role="footer" data-position="fixed" class="mbwidget" mbuilderid="footer-<%=componentid%>" data-widgetid="com.mbuilder.widget.footer">
     <h3 class="selectable" mbuilderid="footerlabel-<%=componentid%>" data-widgetid="com.mbuilder.widget.label">Footer</h3>
 </div>

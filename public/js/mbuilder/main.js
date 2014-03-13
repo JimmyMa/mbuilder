@@ -1,6 +1,6 @@
 var mbuilderAttributes = ["mbuilderid", "data-widgetid"];
 var myLayout;
-
+var projectId = location.search.substring( location.search.indexOf( "=" ) + 1 );
 
 var layoutSettings_Outer = {
     name: "outerLayout" 
@@ -46,7 +46,9 @@ function init() {
     
     $("#jsArea").css("width", $("#Javascript").parent().css("width"));
     $("#jsArea").css("height", $("#Javascript").parent().css("height"));
+
 }
+
 
 function initPropertiesView() {
     $.pubsub( "subscribe", "widget.action.selected", function( topic, widgetData ) {
@@ -140,20 +142,6 @@ function publishToChildren( topic, data ) {
 }
 
 function initWidgets() {
-/*
-    mbuilder.loadWidget( "com.mbuilder.widget.header" );
-    mbuilder.loadWidget( "com.mbuilder.widget.button" );
-    mbuilder.loadWidget( "com.mbuilder.widget.footer" );
-    mbuilder.loadWidget( "com.mbuilder.widget.listview" );
-    mbuilder.loadWidget( "com.mbuilder.widget.navbar" );
-    mbuilder.loadWidget( "com.mbuilder.widget.image" );
-    mbuilder.loadWidget( "com.mbuilder.widget.label" );
-    
-    mbuilder.loadWidget( "com.mbuilder.widget.tabs" );
-    mbuilder.loadWidget( "com.mbuilder.widget.text" );
-    mbuilder.loadWidget( "com.mbuilder.widget.simpletmp" );
-*/
-    
     mbuilder.loadGroup( "general" );
     mbuilder.loadGroup( "forms" );
     mbuilder.loadGroup( "toolbars" );
@@ -227,21 +215,21 @@ function initEvents() {
     $("#action_export").click( function() {
         doexport();
     });
-    
-    $.pubsub( "subscribe", "mbuilder.action.newpage", function( topic, pageList ) {
-        $("#pagesList").empty();
-        for( var i = 0; i < pageList.pages.length; i ++ ) {
-            $("#pagesList").append( '<li data-activepage="' + pageList.pages[i] + '"' + 
-                ( pageList.pages[i] == pageList.active ? ' class="active"' : '' ) + '><a href="#">' + pageList.pages[i] + '</a></li>' );
-        }
-        $(".nav-stacked li").click(function() {
-            $(".nav-stacked li").removeClass("active"); 
-            $(this).addClass("active");
-            $("#childIframe").get(0).contentWindow.$.mobile.changePage("#" +  $(this).data( "activepage" ) );
-            $("#previewIframe").get(0).contentWindow.$.mobile.changePage("#" +  $(this).data( "activepage" ) );
-        });
-    });
 }
+
+$.pubsub( "subscribe", "mbuilder.action.newpage", function( topic, pageList ) {
+    $("#pagesList").empty();
+    for( var i = 0; i < pageList.pages.length; i ++ ) {
+        $("#pagesList").append( '<li data-activepage="' + pageList.pages[i] + '"' + 
+            ( pageList.pages[i] == pageList.active ? ' class="active"' : '' ) + '><a href="#">' + pageList.pages[i] + '</a></li>' );
+    }
+    $(".nav-stacked li").click(function() {
+        $(".nav-stacked li").removeClass("active"); 
+        $(this).addClass("active");
+        $("#childIframe").get(0).contentWindow.$.mobile.changePage("#" +  $(this).data( "activepage" ) );
+        $("#previewIframe").get(0).contentWindow.$.mobile.changePage("#" +  $(this).data( "activepage" ) );
+    });
+});
 
 function doSave() {
     var project = processProject();
@@ -260,7 +248,7 @@ function doSave() {
 }
 
 function processProject() {
-    var project = {cssFiles: [], jsFiles: [], files: []};
+    var project = {projectId: projectId, cssFiles: [], jsFiles: [], files: []};
     var rawCodes = $("#codesIframe").get(0).contentWindow.$("body" ).html();
     var cleanCodes = removeMBuilderCodes( rawCodes, project );
     var javascript = [];

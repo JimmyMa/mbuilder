@@ -2,7 +2,7 @@ package controllers;
 
 import java.io.File;
 
-import models.Project;
+import mbuilder.MProject;
 
 import org.codehaus.jackson.JsonNode;
 
@@ -18,7 +18,7 @@ public class Actions extends Controller {
 	
 	public static Result export() {
 		JsonNode vendorJson = request().body().asJson();
-		Project code = Json.fromJson(vendorJson, Project.class);
+		MProject code = Json.fromJson(vendorJson, MProject.class);
 		if ( code == null) {
             return badRequest( ControllersUtils.getErrorMessage( "Failed to save!" ) );
         } else {

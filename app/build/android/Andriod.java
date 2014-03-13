@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.Project;
+import mbuilder.MProject;
 import play.Logger;
 import play.api.Play;
 import views.html.preview;
@@ -15,7 +15,7 @@ public class Andriod {
 	
 	static File rootDir = Play.current().getFile( "resources/android" );
 	
-	public static String build( Project project ) {
+	public static String build( MProject project ) {
         File unsignedApkFile = new File(rootDir, "MBuilder.ap_");
 
         try {

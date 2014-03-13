@@ -61,9 +61,32 @@ function init() {
     $( "#page0" ).on( 'pageshow',function(event){
       updatePageList();
     });
+
+    initProjectSource();
 }
 
 
+function initProjectSource() {
+    $.ajax({  
+      url: "/projectsource/" + parent.projectId,  
+      type: "GET",  
+      success: function(data){
+        var el = $(data.rawHtmlCodes.trim());
+        $("#container-1062").append( el );
+        $.mobile.changePage( "#" + el[0].id );
+        updatePageList();
+        publish2Codes( "projectsourceupdated", data );
+      },  
+      error: function(){
+        var initcodes = '<div data-role="page" data-theme="a" id="page0"></div>';
+        var el = $(initcodes);
+        $("#container-1062").append( el );
+        $.mobile.changePage( "#" + el[0].id );
+        updatePageList();
+        publish2Codes( "projectsourceinit", initcodes );
+      }  
+    });  
+}
 
 function outlineWidget( control ) {
     var parent = control.parent();
@@ -296,7 +319,9 @@ function updatePageList() {
     var pageList = {active: getCurrentPageId(), pages: []};
     var pages = $("div[data-role='page']");
     for ( var i = 0; i < pages.length; i ++ ) {
-        pageList.pages.push( $(pages[i]).attr( "id" ) );
+        if ( $(pages[i]).attr( "id" ) != undefined ) {
+            pageList.pages.push( $(pages[i]).attr( "id" ) );
+        }
     }
     publish2Parent( "mbuilder.action.newpage", pageList );
 }
